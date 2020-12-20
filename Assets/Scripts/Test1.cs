@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class Test1 : MonoBehaviour
 {
-    private void Start()
-    {
-        Test.Instance.AddNum();
-    }
+  
 }
 

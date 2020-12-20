@@ -2,21 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Test : MonoSingletonGO<Test>
+public class Test : MonoBehaviour
 {
 
-    [SerializeField] private int num;
-
-    public void AddNum()
+    private void Start()
     {
-        Debug.Log("I am a manager and add number");
-        num += 5;
+        
     }
 
 }
 
-public class TestManager
-{
-
-}
 
