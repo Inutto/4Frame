@@ -311,3 +311,161 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5ab526f97d404542a251157cdbd8fbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1045944785
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1045944787}
+  - component: {fileID: 1045944786}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1045944786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1045944785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 225cbdc48a237ed46809eed692fa553b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MainMixer: {fileID: 24100000, guid: 2173818f3d6ea2142b2df6d761e5ad88, type: 2}
+  Master: {fileID: 24300002, guid: 2173818f3d6ea2142b2df6d761e5ad88, type: 2}
+  BG: {fileID: 3745411329641483659, guid: 2173818f3d6ea2142b2df6d761e5ad88, type: 2}
+  SFX: {fileID: 6543168646650074480, guid: 2173818f3d6ea2142b2df6d761e5ad88, type: 2}
+  AD: {fileID: -1734704583370983847, guid: 2173818f3d6ea2142b2df6d761e5ad88, type: 2}
+  MUS: {fileID: 5314172965453629983, guid: 2173818f3d6ea2142b2df6d761e5ad88, type: 2}
+  Volumn_Master:
+    value: 0
+  Volumn_BG:
+    value: 0
+  Volumn_SFX:
+    value: 0
+  Volumn_AD:
+    value: 0
+  Volumn_MUS:
+    value: 0
+  clipList: []
+--- !u!4 &1045944787
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1045944785}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.05658, y: 0.5658588, z: -6.5464435}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1475367147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1475367148}
+  - component: {fileID: 1475367149}
+  m_Layer: 0
+  m_Name: MusicManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1475367148
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1475367147}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1475367149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1475367147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d72816eeeb587d4b91c26bcb523e550, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bar: 0
+  beat: 0
+  tempo: 0
+  trackCount: 0
+  MusicSections:
+  - name: 
+    Clip: {fileID: 0}
+    volumn: 1
+  - name: 
+    Clip: {fileID: 0}
+    volumn: 1
+  - name: 
+    Clip: {fileID: 0}
+    volumn: 1
+  - name: 
+    Clip: {fileID: 0}
+    volumn: 1
+  MusicStateDic:
+    reorderableList:
+      canAdd: 1
+      canRemove: 1
+      draggable: 1
+      expandable: 1
+      multipleSelection: 1
+      isExpanded: 1
+      label:
+        m_Text: Keys
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+      headerHeight: 18
+      footerHeight: 13
+      slideEasing: 0.15
+      verticalSpacing: 2
+      showDefaultBackground: 1
+      elementDisplayType: 0
+      elementNameProperty: 
+      elementNameOverride: 
+      elementIcon: {fileID: 0}
+    reqReferences: {fileID: 0}
+    isExpanded: 1
+    _keyValues:
+    - 1
+    - 2
+    _keys:
+    - 1
+    - 2
+    _values:
+    - musicSecList:
+      - name: 
+        Clip: {fileID: 0}
+        volumn: 1
+      - name: 
+        Clip: {fileID: 0}
+        volumn: 1
+    - musicSecList: []

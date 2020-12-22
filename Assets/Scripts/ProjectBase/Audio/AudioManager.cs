@@ -41,7 +41,7 @@ public class Clip
 }
 
 #endregion
-public class AudioManager :  MonoSingletonGO<AudioManager>
+public class AudioManager :  MonoSingletonCO<AudioManager>
 {
 
     // AudioGroup 设置
@@ -54,6 +54,7 @@ public class AudioManager :  MonoSingletonGO<AudioManager>
     public AudioMixerGroup MUS;     // Music
 
     public ReactiveProperty<float> Volumn_Master = new ReactiveProperty<float>();
+    
     [HideInInspector] public ReactiveProperty<float> Volumn_BG = new ReactiveProperty<float>();
     [HideInInspector] public ReactiveProperty<float> Volumn_SFX = new ReactiveProperty<float>();
     [HideInInspector] public ReactiveProperty<float> Volumn_AD = new ReactiveProperty<float>();
