@@ -10,63 +10,101 @@ using BasicTools.ButtonInspector;
 public class MusicSec
 {
     // Default fixed tempo
-    public string name;
     public AudioClip Clip;
+    [Range(0, 1)] public float volumn = 1;
+    [SerializeField] ReactiveProperty<float> volumn_control = new ReactiveProperty<float>();
+
     [System.NonSerialized] public int barCount; // length
-
-    [Range(0,1)] public float volumn = 1;
-
     [System.NonSerialized] public AudioSource Source;
+
+    public void InitializeVolumnSubs()
+    {
+        volumn_control
+            .Subscribe(value =>
+            {
+                Debug.Log("Subs for volumn_control");
+                if (Source) Source.volume = value;
+                volumn = value;
+            }
+            ).AddTo(this.Source);
+    }
 }
 
+/// <summary>
+/// {SecName : Sec} Store All Music Sections by Name (Key)
+/// </summary>
+[System.Serializable]
+public class MusicSectionDictionary : SerializableDictionaryBase<string, MusicSec> { }
+
+/// <summary>
+/// {StateName : SecNameList} Store All Music State by stateName (Key)
+/// </summary>
+[System.Serializable]
+public class MusicStateDictionary : SerializableDictionaryBase<string, MusicSecNameList> { }
 
 [System.Serializable]
-public class MusicSecList
+public class MusicSecNameList
 {
-    public List<MusicSec> musicSecList = new List<MusicSec>();
+    public List<string> musicSecNameList = new List<string>();
 }
+
+
 
 
 public class MusicManager : MonoSingletonCO<MusicManager>
 {
 
-    // unified music property
+
+   
+    [Header("Unified Musical Property")]
     public int bar;
     public int beat;
     public float tempo;
-
     [SerializeField] private int trackCount;
 
+    [Header("Section List")]
     // Current Available Sections, Update every bar
-    [SerializeField] List<MusicSec> MusicSections = new List<MusicSec>();
+    [SerializeField] MusicSectionDictionary MusicSections = new MusicSectionDictionary();
 
-    [System.Serializable]
-    public class MusicStateDictionary : SerializableDictionaryBase<string, MusicSecList> { }
+    [Header("Section State Dictionary")]
     [SerializeField] MusicStateDictionary MusicStateDic = new MusicStateDictionary();
 
     private void Start()
     {
-        
+        InitializeMusicSections();
+
+        StartMusicState("Test");
+
+
+    }
+
+    public void TestChangeState()
+    {
+        StartMusicState("Test");
     }
 
     private void InitializeMusicSections()
     {
-        foreach(var sec in MusicSections)
+        foreach(var item in MusicSections)
         {
-
+            var sec = item.Value;
             // refull audiosource
+
             if(sec.Source == null)
             {
-                if(sec.name == null || sec.Clip == null)
+                if(item.Key == null || sec.Clip == null)
                 {
                     Debug.LogError("Can not Initialize mus sec without clip/name/volumn ");
                     return;
                 } else
                 {
-                    AddAudioSource(sec.Clip, true, sec.volumn);
+                    var source = AddAudioSource(sec.Clip, true, sec.volumn);
+                    sec.Source = source;
                 
                 }
             }
+
+            sec.InitializeVolumnSubs();
         }
     }
 
@@ -84,39 +122,55 @@ public class MusicManager : MonoSingletonCO<MusicManager>
     }
 
    
-    private MusicSec CreateMusicSection(string _secName, AudioClip _clip)
+    private MusicSec CreateMusicSection(AudioClip _clip)
     {
         MusicSec ms = new MusicSec();
 
         // Music Section Settings
-        ms.name = _secName;
         ms.Clip = _clip;
         ms.Source = AddAudioSource(_clip, true, 1);
 
         return ms;
     }
 
-    private void AddMusicSection(MusicSec _sec)
+    private void AddMusicSection(string _secName, MusicSec _sec)
     {
-        MusicSections.Add(_sec);
+        MusicSections.Add(_secName, _sec);
     }
 
     
     private void AddMusicSection(string _secName, AudioClip _clip)
     {
-        MusicSections.Add(CreateMusicSection(_secName, _clip));
+        var sec = CreateMusicSection(_clip);
+        MusicSections.Add(_secName, sec);
     }
 
     private void RemoveMusicSection(string _secName)
     {
-        foreach(var sec in MusicSections)
+        if (!MusicSections.ContainsKey(_secName))
         {
-            if(sec.name == _secName)
-            {
-                Debug.Log("Remove Section: " + sec.name);
-                Destroy(sec.Source); // remove from manager
-                MusicSections.Remove(sec);
-            }
+            Debug.LogWarning("Trying to remove music section -> " + _secName + " which not exists in musicsections");
+            return;
+        }
+
+        MusicSections.Remove(_secName);
+    }
+
+    
+    public void StartMusicState(string _stateName)
+    {
+        if (!MusicStateDic.ContainsKey(_stateName))
+        {
+            Debug.LogError("Can not find Music State with name ->" + _stateName);
+            return;
+        }
+
+        var nameList = MusicStateDic[_stateName].musicSecNameList;
+
+        foreach(var name in nameList)
+        {
+            Debug.Log("Current name: " + name);
+            MusicSections[name].Source.Play();
         }
     }
 
