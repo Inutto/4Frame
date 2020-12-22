@@ -368,6 +368,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1475367148}
   - component: {fileID: 1475367149}
+  - component: {fileID: 1475367150}
   m_Layer: 0
   m_Name: MusicManager
   m_TagString: Untagged
@@ -429,13 +430,27 @@ MonoBehaviour:
     reqReferences: {fileID: 0}
     isExpanded: 1
     _keyValues:
-    - TestSec
+    - Harp
+    - Harp2
+    - Harp3
+    - Har
     _keys:
-    - TestSec
+    - Harp
+    - Harp2
+    - Harp3
+    - Har
     _values:
-    - name: TestSec
-      Clip: {fileID: 8300000, guid: 47ff9aa66ebcf784399bb331385d08e7, type: 3}
+    - Clip: {fileID: 8300000, guid: 173b038f93faec94c93e73b65be2332d, type: 3}
       volumn: 0.82
+    - Clip: {fileID: 8300000, guid: bc0d105cc43db464089c38add127fb6b, type: 3}
+      volumn: 0.82
+    - Clip: {fileID: 8300000, guid: 26cc127df7e881e4b870b26a9ce46b45, type: 3}
+      volumn: 0.82
+    - Clip: {fileID: 8300000, guid: 47ff9aa66ebcf784399bb331385d08e7, type: 3}
+      volumn: 0.82
+  currentMusicState: 
+  currentMusicState_control:
+    value: Test
   MusicStateDic:
     reorderableList:
       canAdd: 1
@@ -465,4 +480,26 @@ MonoBehaviour:
     - Test
     _values:
     - musicSecNameList:
-      - TestSec
+      - Harp
+      - Harp2
+      - Harp3
+      - Harp
+--- !u!95 &1475367150
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1475367147}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d23583e4c5aab5d4ba4851f0c9922bbd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

@@ -5,6 +5,7 @@ using UniRx;
 
 using RotaryHeart.Lib.SerializableDictionary;
 using BasicTools.ButtonInspector;
+using System;
 
 [System.Serializable]
 public class MusicSec
@@ -12,22 +13,10 @@ public class MusicSec
     // Default fixed tempo
     public AudioClip Clip;
     [Range(0, 1)] public float volumn = 1;
-    [SerializeField] ReactiveProperty<float> volumn_control = new ReactiveProperty<float>();
 
     [System.NonSerialized] public int barCount; // length
     [System.NonSerialized] public AudioSource Source;
 
-    public void InitializeVolumnSubs()
-    {
-        volumn_control
-            .Subscribe(value =>
-            {
-                Debug.Log("Subs for volumn_control");
-                if (Source) Source.volume = value;
-                volumn = value;
-            }
-            ).AddTo(this.Source);
-    }
 }
 
 /// <summary>
@@ -50,6 +39,30 @@ public class MusicSecNameList
 
 
 
+// TEMP for listen
+public class EventListener<T>
+{
+    public delegate void OnValueChangeDelegate(T newVal);
+    public event OnValueChangeDelegate OnVariableChange;
+    private T m_value;
+    public T Value
+    {
+        get
+        {
+            return m_value;
+        }
+        set
+        {
+            if (m_value.Equals(value)) return;
+            OnVariableChange?.Invoke(value);
+            m_value = value;
+        }
+    }
+}
+
+
+
+
 
 public class MusicManager : MonoSingletonCO<MusicManager>
 {
@@ -67,13 +80,32 @@ public class MusicManager : MonoSingletonCO<MusicManager>
     [SerializeField] MusicSectionDictionary MusicSections = new MusicSectionDictionary();
 
     [Header("Section State Dictionary")]
+    public string currentMusicState;
     [SerializeField] MusicStateDictionary MusicStateDic = new MusicStateDictionary();
+
+    
 
     private void Start()
     {
         InitializeMusicSections();
 
-        StartMusicState("Test");
+    }
+
+    private void FadeToMusicState(string _state)
+    {
+        Debug.Log("Fade");
+        if (!MusicStateDic.ContainsKey(_state))
+        {
+            Debug.LogWarning("state -> " + _state + " can not be found in current music state dic. no change made.");
+            return;
+        }
+
+        if (currentMusicState == null) StartMusicState(_state);
+
+        // Trans
+
+        SetSectionsLoop(currentMusicState, false);
+
 
 
     }
@@ -103,8 +135,6 @@ public class MusicManager : MonoSingletonCO<MusicManager>
                 
                 }
             }
-
-            sec.InitializeVolumnSubs();
         }
     }
 
@@ -156,6 +186,22 @@ public class MusicManager : MonoSingletonCO<MusicManager>
         MusicSections.Remove(_secName);
     }
 
+
+    private void SetSectionsLoop(string _musicState, bool _state)
+    {
+        if (!MusicStateDic.ContainsKey(_musicState))
+        {
+            Debug.LogWarning("State -> " + _musicState + " can not be found in current music state dic");
+            return;
+        }
+
+        foreach(var name in MusicStateDic[_musicState].musicSecNameList)
+        {
+            var sec = MusicSections[name];
+            sec.Source.loop = _state;
+        }
+    }
+
     
     public void StartMusicState(string _stateName)
     {
@@ -173,6 +219,9 @@ public class MusicManager : MonoSingletonCO<MusicManager>
             MusicSections[name].Source.Play();
         }
     }
+
+
+
 
     
     
