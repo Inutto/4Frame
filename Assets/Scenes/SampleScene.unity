@@ -430,15 +430,15 @@ MonoBehaviour:
     reqReferences: {fileID: 0}
     isExpanded: 1
     _keyValues:
-    - Harp
+    - Harp1
     - Harp2
     - Harp3
-    - Har
+    - HarpDelay
     _keys:
-    - Harp
+    - Harp1
     - Harp2
     - Harp3
-    - Har
+    - HarpDelay
     _values:
     - Clip: {fileID: 8300000, guid: 173b038f93faec94c93e73b65be2332d, type: 3}
       volumn: 0.82
@@ -448,9 +448,7 @@ MonoBehaviour:
       volumn: 0.82
     - Clip: {fileID: 8300000, guid: 47ff9aa66ebcf784399bb331385d08e7, type: 3}
       volumn: 0.82
-  currentMusicState: 
-  currentMusicState_control:
-    value: Test
+  _currentMusicState: 
   MusicStateDic:
     reorderableList:
       canAdd: 1
@@ -476,14 +474,18 @@ MonoBehaviour:
     isExpanded: 1
     _keyValues:
     - Test
+    - Test2
     _keys:
     - Test
+    - Test2
     _values:
     - musicSecNameList:
-      - Harp
       - Harp2
+      - Harp1
+    - musicSecNameList:
+      - Harp1
       - Harp3
-      - Harp
+      - Harp2
 --- !u!95 &1475367150
 Animator:
   serializedVersion: 3

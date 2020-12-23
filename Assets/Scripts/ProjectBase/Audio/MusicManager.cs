@@ -17,6 +17,22 @@ public class MusicSec
     [System.NonSerialized] public int barCount; // length
     [System.NonSerialized] public AudioSource Source;
 
+
+    public void FadeVolumnTo(float _volumn, int numOfBarCount)
+    {
+
+    }
+
+    public void Play()
+    {
+        this.Source.loop = true;
+        this.Source.Play();
+    }
+
+    public void PauseOnLoopFinish()
+    {
+        this.Source.loop = false;
+    }
 }
 
 /// <summary>
@@ -67,8 +83,6 @@ public class EventListener<T>
 public class MusicManager : MonoSingletonCO<MusicManager>
 {
 
-
-   
     [Header("Unified Musical Property")]
     public int bar;
     public int beat;
@@ -80,7 +94,7 @@ public class MusicManager : MonoSingletonCO<MusicManager>
     [SerializeField] MusicSectionDictionary MusicSections = new MusicSectionDictionary();
 
     [Header("Section State Dictionary")]
-    public string currentMusicState;
+    public string _currentMusicState;
     [SerializeField] MusicStateDictionary MusicStateDic = new MusicStateDictionary();
 
     
@@ -89,9 +103,14 @@ public class MusicManager : MonoSingletonCO<MusicManager>
     {
         InitializeMusicSections();
 
+        StartMusicState("Test");
+
+        Observable.Timer(TimeSpan.FromSeconds(3f))
+            .Subscribe(_ => FadeToMusicState("Test", "Test2"));
+
     }
 
-    private void FadeToMusicState(string _state)
+    private void FadeToMusicState(string _currentMusicState, string _state)
     {
         Debug.Log("Fade");
         if (!MusicStateDic.ContainsKey(_state))
@@ -100,14 +119,40 @@ public class MusicManager : MonoSingletonCO<MusicManager>
             return;
         }
 
-        if (currentMusicState == null) StartMusicState(_state);
+        if (_currentMusicState == null) StartMusicState(_state);
+
 
         // Trans
+        var currentSecNameList = MusicStateDic[_currentMusicState];
+        var targetSecNameList = MusicStateDic[_state];
 
-        SetSectionsLoop(currentMusicState, false);
+        MusicSec lastSec = new MusicSec();
+        foreach(var name in currentSecNameList.musicSecNameList)
+        {
+            MusicSections[name].PauseOnLoopFinish();
+            Debug.Log("Sec -> " + name + " pause on next loop");
+            lastSec = MusicSections[name];
+        }
 
+        if(lastSec.Source == null)
+        {
+            Debug.LogError("The sample sec's source is empty");
+        }
 
+        Observable.EveryUpdate()
+            .Where(_ => lastSec.Source.isPlaying == false)
+            .First()
+            .Subscribe(_ =>
+            {
+                Debug.Log("last sec stop playing");
+                foreach (var name in targetSecNameList.musicSecNameList)
+                {
+                    var sec = MusicSections[name];
+                    sec.Play();
+                }
 
+            }
+            );
     }
 
     public void TestChangeState()
@@ -151,7 +196,6 @@ public class MusicManager : MonoSingletonCO<MusicManager>
         return source;
     }
 
-   
     private MusicSec CreateMusicSection(AudioClip _clip)
     {
         MusicSec ms = new MusicSec();
@@ -168,7 +212,6 @@ public class MusicManager : MonoSingletonCO<MusicManager>
         MusicSections.Add(_secName, _sec);
     }
 
-    
     private void AddMusicSection(string _secName, AudioClip _clip)
     {
         var sec = CreateMusicSection(_clip);
@@ -202,7 +245,8 @@ public class MusicManager : MonoSingletonCO<MusicManager>
         }
     }
 
-    
+
+
     public void StartMusicState(string _stateName)
     {
         if (!MusicStateDic.ContainsKey(_stateName))
