@@ -109,8 +109,8 @@ public class MusicManager : MonoSingletonCO<MusicManager>
 
         StartMusicState("Test");
 
-        Observable.Timer(TimeSpan.FromSeconds(3f))
-            .Subscribe(_ => FadeToMusicState("Test", "Test2"));
+        //bservable.Timer(TimeSpan.FromSeconds(3f))
+        //    .Subscribe(_ => FadeToMusicState("Test", "Test2"));
 
         MusicSections["Harp1"].FadeVolumnTo(0.2f, 4f);
 
