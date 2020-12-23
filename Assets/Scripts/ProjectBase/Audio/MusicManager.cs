@@ -14,13 +14,20 @@ public class MusicSec
     public AudioClip Clip;
     [Range(0, 1)] public float volumn = 1;
 
-    [System.NonSerialized] public int barCount; // length
+    public int barCount; // length
     [System.NonSerialized] public AudioSource Source;
 
 
-    public void FadeVolumnTo(float _volumn, int numOfBarCount)
+    public void FadeVolumnTo(float _volumn, float _time)
     {
+        Debug.Log("Fade volumn to " + _volumn);
+        LeanTween.value(this.Source.gameObject, FadeVolumnCallback, this.Source.volume, _volumn, _time);
 
+    }
+
+    public void FadeVolumnCallback(float _volumn)
+    {
+        this.Source.volume = _volumn;
     }
 
     public void Play()
@@ -84,10 +91,7 @@ public class MusicManager : MonoSingletonCO<MusicManager>
 {
 
     [Header("Unified Musical Property")]
-    public int bar;
-    public int beat;
-    public float tempo;
-    [SerializeField] private int trackCount;
+    public float secondsPerBar;
 
     [Header("Section List")]
     // Current Available Sections, Update every bar
@@ -107,6 +111,8 @@ public class MusicManager : MonoSingletonCO<MusicManager>
 
         Observable.Timer(TimeSpan.FromSeconds(3f))
             .Subscribe(_ => FadeToMusicState("Test", "Test2"));
+
+        MusicSections["Harp1"].FadeVolumnTo(0.2f, 4f);
 
     }
 
