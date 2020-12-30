@@ -101,7 +101,7 @@ public class MusicManager : MonoSingletonCO<MusicManager>
     public string _currentMusicState;
     [SerializeField] MusicStateDictionary MusicStateDic = new MusicStateDictionary();
 
-    
+
 
     private void Start()
     {
@@ -133,14 +133,14 @@ public class MusicManager : MonoSingletonCO<MusicManager>
         var targetSecNameList = MusicStateDic[_state];
 
         MusicSec lastSec = new MusicSec();
-        foreach(var name in currentSecNameList.musicSecNameList)
+        foreach (var name in currentSecNameList.musicSecNameList)
         {
             MusicSections[name].PauseOnLoopFinish();
             Debug.Log("Sec -> " + name + " pause on next loop");
             lastSec = MusicSections[name];
         }
 
-        if(lastSec.Source == null)
+        if (lastSec.Source == null)
         {
             Debug.LogError("The sample sec's source is empty");
         }
@@ -168,22 +168,23 @@ public class MusicManager : MonoSingletonCO<MusicManager>
 
     private void InitializeMusicSections()
     {
-        foreach(var item in MusicSections)
+        foreach (var item in MusicSections)
         {
             var sec = item.Value;
             // refull audiosource
 
-            if(sec.Source == null)
+            if (sec.Source == null)
             {
-                if(item.Key == null || sec.Clip == null)
+                if (item.Key == null || sec.Clip == null)
                 {
                     Debug.LogError("Can not Initialize mus sec without clip/name/volumn ");
                     return;
-                } else
+                }
+                else
                 {
                     var source = AddAudioSource(sec.Clip, true, sec.volumn);
                     sec.Source = source;
-                
+
                 }
             }
         }
@@ -244,7 +245,7 @@ public class MusicManager : MonoSingletonCO<MusicManager>
             return;
         }
 
-        foreach(var name in MusicStateDic[_musicState].musicSecNameList)
+        foreach (var name in MusicStateDic[_musicState].musicSecNameList)
         {
             var sec = MusicSections[name];
             sec.Source.loop = _state;
@@ -263,11 +264,23 @@ public class MusicManager : MonoSingletonCO<MusicManager>
 
         var nameList = MusicStateDic[_stateName].musicSecNameList;
 
-        foreach(var name in nameList)
+        foreach (var name in nameList)
         {
             Debug.Log("Current name: " + name);
             MusicSections[name].Source.Play();
         }
+    }
+
+
+
+
+    //   --- Tools for animator
+
+    public void SetStateAnimator()
+    {
+
+
+
     }
 
 }
