@@ -36,7 +36,6 @@ namespace FourFrame.TopDown{
         TimelineState state = TimelineState.READ;
 
 
-
         /// <summary>
         /// Using Command Mode to Update Infor to Timeline
         /// </summary>
@@ -44,11 +43,9 @@ namespace FourFrame.TopDown{
 
 
 
-
-
         #endregion
 
-
+        
         #region SUPER METHOD
 
         /// <summary>
@@ -72,13 +69,168 @@ namespace FourFrame.TopDown{
 
         #region TOOLS
 
+        /// <summary>
+        /// Return the instance at desinated Point position and layermask
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="_pos"></param>
+        /// <param name="_layer"></param>
+        /// <returns></returns>
+        protected T GetInstanceAt<T>(Point _pos, LayerMask _layer) where T : Instance
+        {
+            Instance _ins = GetInstanceAt(_pos, _layer);
+            if (_ins != null)
+            {
+                bool result = _ins is T;
+                if (result)
+                {
+                    T ins = _ins as T;
+                    return ins;
+                }
+                else
+                {
+                    Debug.Log(string.Format("No instance of required T Type at targetPos:") + StringPos(_pos));
+                    return null;
+                }
+            }
+
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Is there any instance at desinated Point position?
+        /// </summary>
+        /// <typeparam name="T"></typeparam> Type of instance
+        /// <param name="_pos"></param>
+        /// <param name="_layer"></param> Layermask
+        /// <returns></returns>
+        protected bool IsInstanceAt<T>(Point _pos, LayerMask _layer) where T : Instance
+        {
+            T ins = GetInstanceAt<T>(_pos, _layer);
+            if (ins != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Return true if _pos is adjacent Point position of this.position
+        /// </summary>
+        /// <param name="_pos"></param>
+        /// <returns></returns>
+        protected bool IsAdjacentPos(Point _pos)
+        {
+            var x_adj = Mathf.Abs((position.x - _pos.x)) == 1;
+            var y_adj = Mathf.Abs((position.y - _pos.y)) == 1;
+
+            var x_same = (position.x - _pos.x) == 0;
+            var y_same = (position.y - _pos.y) == 0;
+
+            return (x_adj && y_same || y_adj && x_same);
+        }
+
+        /// <summary>
+        /// Return true if _ins.position is adjacent Point position of this.position
+        /// </summary>
+        /// <param name="_ins"></param>
+        /// <returns></returns>
+        protected bool IsAdjacentPos(Instance _ins)
+        {
+            return (IsAdjacentPos(_ins.position));
+        }
+
+        /// <summary>
+        /// Sync Point position to World position
+        /// </summary>
+        protected void SyncPosition()
+        {
+            SyncPosition(position);
+        }
+
+        /// <summary>
+        /// Sync _pos to World position
+        /// </summary>
+        /// <param name="_pos"></param>
+        protected void SyncPosition(Point _pos)
+        {
+            var syncPosition = Grid.Instance.Point2World(_pos);
+            gameObject.transform.position = syncPosition;
+        }
+
+
+        // TEMP
+
+        public string StringPos()
+        {
+            return StringPos(position);
+        }
+
+        /// <summary>
+        /// Also used by other class to print info
+        /// </summary>
+        /// <param name="_pos"></param>
+        /// <returns></returns>
+        public static string StringPos(Point _pos)
+        {
+            return string.Format("({0},{1})", _pos.x, _pos.y);
+        }
+
+
+
+
         #endregion
 
         #region PRIVATE IMPL
 
+
+        private bool isInstanceAt(Point _pos, LayerMask _layer)
+        {
+            Collider2D hitCollider = GetColliderAt(_pos, _layer);
+            if (hitCollider != null)
+            {
+                return true;
+            }
+            else
+            {
+                Debug.Log("---> No Collider at targetPos");
+                return false;
+            }
+        }
+
+        private Instance GetInstanceAt(Point _pos, LayerMask _layer)
+        {
+            Collider2D hitCollider = GetColliderAt(_pos, _layer);
+            if (hitCollider != null)
+            {
+                Instance ins = hitCollider.gameObject.GetComponent<Instance>();
+                return ins;
+            }
+            else
+            {
+                //Debug.Log("---> No Collider at targetPos");
+                return null;
+            }
+        }
+
+        private Collider2D GetColliderAt(Point _pos, LayerMask _layer)
+        {
+            var targetPos = Grid.Instance.Point2World(_pos);
+            var checkRadius = Grid.Instance.unit / 2;
+
+            //Debug.Log("Check Instance At target Position: " + StringPos(_pos));
+            Collider2D hitCollider = Physics2D.OverlapCircle(targetPos, checkRadius, _layer);
+            return hitCollider;
+        }
+
+
         #endregion
-
-
 
 
 
