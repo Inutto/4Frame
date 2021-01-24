@@ -43,6 +43,11 @@ namespace FourFrame.TopDown
             return new Vector2(newX, newY);
         }
 
+        /// <summary>
+        /// (Precise transform.position required)
+        /// </summary>
+        /// <param name="_worldPos"></param>
+        /// <returns></returns>
         public Point World2Point(Vector2 _worldPos)
         {
             var originPoint = origin.position;

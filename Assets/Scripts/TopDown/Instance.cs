@@ -9,6 +9,7 @@ namespace FourFrame.TopDown{
     public class Instance : MonoBehaviour
     {
 
+
         #region SUPER PROPERTY
 
         /// <summary>
@@ -66,8 +67,8 @@ namespace FourFrame.TopDown{
         /// READ to complete timelineInput with *NO INPUT CONTROL*
         /// , and WRITE to record onto timeline with *INPUT CONTROl*
         /// </summary>
-        enum TimelineState { READ, WRITE }
-        TimelineState state = TimelineState.READ;
+        public enum TimelineState { READ, WRITE }
+        public TimelineState state = TimelineState.READ;
 
 
         /// <summary>
@@ -271,6 +272,40 @@ namespace FourFrame.TopDown{
             //Debug.Log("Check Instance At target Position: " + StringPos(_pos));
             Collider2D hitCollider = Physics2D.OverlapCircle(targetPos, checkRadius, _layer);
             return hitCollider;
+        }
+
+        #endregion
+
+
+        #region GLOBAL STATIC
+
+        /// <summary>
+        /// Get All Instances of type T with desinated tag
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        public static T[] GetInstances<T>(string tag) where T : Instance
+        {
+            var _instances = GameObject.FindGameObjectsWithTag(tag);
+
+            if (_instances.Length == 0)
+            {
+                Debug.LogWarning(string.Format("Timeline: Can not find active {0}: No Players", tag));
+                return null;
+            }
+            else
+            {
+                T[] instances = new T[_instances.Length];
+                for (int i = 0; i < _instances.Length; i++)
+                {
+                    T instance = _instances[i].GetComponent<T>();
+                    instances[i] = instance;
+                }
+
+                return instances;
+
+            }
         }
 
 

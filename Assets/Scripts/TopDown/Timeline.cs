@@ -12,11 +12,23 @@ namespace FourFrame.TopDown
 
     public class Timeline : MonoBehaviour
     {
-        [Header("Core")]
-        public int currentTick; // Start with 1 (rather than 0)
 
-        [Header("Record List")]
-        [SerializeField] private List<Instance> activeInstanceList;
+        private TimelineManager timelineManager;
+
+
+        /// <summary>
+        /// Analyze BaseInfo Type and return this enum to pass to different minor handler
+        /// </summary>
+        enum COMMAND_HANDLER_CASE
+        {
+            PLAYER_MOVE,
+            PORTAL_RESET_POSITION,
+            ITEM_TRIGGER,
+            PORTAL_TRIGGER
+        }
+
+        [Header("Core")]
+        public int currentTick; // Start with 1 (rather than 0) 
 
         [Space(2)]
         [Header("Attributes")]
@@ -24,7 +36,8 @@ namespace FourFrame.TopDown
 
         private void Start()
         {
-            
+            // TODO: Replace with normal get method
+            timelineManager = GameObject.Find("TimelineManager").GetComponent<TimelineManager>();
         }
 
         #region INIT
@@ -32,7 +45,7 @@ namespace FourFrame.TopDown
 
         private void SubscribeInstances()
         {
-            foreach(var instance in activeInstanceList)
+            foreach(var instance in timelineManager.instancesList)
             {
                 instance.OnCommand += InstanceCommandHandler;
             }
@@ -40,7 +53,7 @@ namespace FourFrame.TopDown
 
         private void UnSubscribeInstances()
         {
-            foreach(var instance in activeInstanceList)
+            foreach(var instance in timelineManager.instancesList)
             {
                 instance.OnCommand -= InstanceCommandHandler;
             }
@@ -51,12 +64,85 @@ namespace FourFrame.TopDown
         #endregion
 
 
-        #region EVENT
+        #region EVENT HANDLER
 
 
+        /// <summary>
+        /// Discuss the type of {baseInfo} and {instance} to decide which handler to use
+        /// </summary>
+        /// <param name="baseInfo"></param>
         private void InstanceCommandHandler(BaseInfo baseInfo)
         {
+           
 
+          
+        }
+
+        // TODO : Create Handlers for each case above
+
+
+
+        #endregion
+
+
+        #region PLAY
+
+        /// <summary>
+        /// Play the tick content with positive or reverse order
+        /// </summary>
+        /// <param name="_tickInfo"></param>
+        /// <param name="isReverse"></param>
+        public void Play(TickInfo _tickInfo, bool isReverse = false)
+        {
+
+        }
+
+        #endregion
+
+
+        #region IMPL
+
+        private COMMAND_HANDLER_CASE BaseInfo2Case(BaseInfo baseInfo)
+        {
+            var instance = baseInfo.instance;
+
+            var case_PlayerMove =
+                    (baseInfo is MoveInfo) &&
+                    (instance is Player);
+            var case_PortalResetPosition =
+                    (baseInfo is MoveInfo) &&
+                    (instance is Portal);
+            var case_ItemTrigger =
+                    (baseInfo is InteractInfo) &&
+                    (instance is Item) &&
+                    !(instance is Portal);
+            var case_PortalTrigger =
+                    (baseInfo is InteractInfo) &&
+                    (instance is Portal);
+
+            if (case_PlayerMove)
+            {
+                return COMMAND_HANDLER_CASE.PLAYER_MOVE;
+            } 
+
+            else if (case_PortalResetPosition)
+            {
+                return COMMAND_HANDLER_CASE.PORTAL_RESET_POSITION;
+            }
+
+            else if(case_ItemTrigger)
+            {
+                return COMMAND_HANDLER_CASE.ITEM_TRIGGER;
+            }
+
+            else if (case_PortalTrigger)
+            {
+                return COMMAND_HANDLER_CASE.PORTAL_TRIGGER;
+            } else
+            {
+                Debug.LogWarning("No match cases for this baseInfo");
+                return null;
+            }
         }
 
         #endregion
