@@ -8,7 +8,6 @@ namespace FourFrame.TopDown{
     public class Instance : MonoBehaviour
     {
 
-
         #region SUPER PROPERTY
 
         /// <summary>
@@ -89,7 +88,7 @@ namespace FourFrame.TopDown{
                 }
                 else
                 {
-                    Debug.Log(string.Format("No instance of required T Type at targetPos:") + StringPos(_pos));
+                    Debug.Log(string.Format("No instance of required T Type at targetPos:") + _pos.ToString());
                     return null;
                 }
             }
@@ -160,32 +159,17 @@ namespace FourFrame.TopDown{
         /// <param name="_pos"></param>
         protected void SyncPosition(Point _pos)
         {
-            var syncPosition = Grid.Instance.Point2World(_pos);
+            var syncPosition = GridMap.Instance.Point2World(_pos);
             gameObject.transform.position = syncPosition;
         }
 
 
-        // TEMP
-
-        public string StringPos()
-        {
-            return StringPos(position);
-        }
-
-        /// <summary>
-        /// Also used by other class to print info
-        /// </summary>
-        /// <param name="_pos"></param>
-        /// <returns></returns>
-        public static string StringPos(Point _pos)
-        {
-            return string.Format("({0},{1})", _pos.x, _pos.y);
-        }
 
 
 
 
         #endregion
+
 
         #region PRIVATE IMPL
 
@@ -221,8 +205,8 @@ namespace FourFrame.TopDown{
 
         private Collider2D GetColliderAt(Point _pos, LayerMask _layer)
         {
-            var targetPos = Grid.Instance.Point2World(_pos);
-            var checkRadius = Grid.Instance.unit / 2;
+            var targetPos = GridMap.Instance.Point2World(_pos);
+            var checkRadius = GridMap.Instance.unit / 2;
 
             //Debug.Log("Check Instance At target Position: " + StringPos(_pos));
             Collider2D hitCollider = Physics2D.OverlapCircle(targetPos, checkRadius, _layer);
@@ -233,11 +217,6 @@ namespace FourFrame.TopDown{
         #endregion
 
 
-
     }
 
 }
-
-
-
-

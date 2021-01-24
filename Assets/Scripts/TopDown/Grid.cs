@@ -5,10 +5,10 @@ using UnityEngine;
 
 namespace FourFrame.TopDown
 {
-    public class Grid : MonoBehaviour
+    public class GridMap : MonoBehaviour
     {
         #region SINGLETON
-        public static Grid Instance;
+        public static GridMap Instance;
 
         private void Awake()
         {
@@ -30,19 +30,25 @@ namespace FourFrame.TopDown
         #endregion SINGLETON
 
         public Transform origin;
-        public Vector3 offset = new Vector3(0, 0, 0); // default
         public float unit;
-
 
         public LayerMask collLayer;
         public LayerMask itemLayer;
 
         public Vector2 Point2World(Point _pos)
         {
-            var originPoint = origin.position + offset;
+            var originPoint = origin.position;
             var newX = originPoint.x + _pos.x * unit;
             var newY = originPoint.y + _pos.y * unit;
             return new Vector2(newX, newY);
+        }
+
+        public Point World2Point(Vector2 _worldPos)
+        {
+            var originPoint = origin.position;
+            var newX = (int) ((_worldPos.x - originPoint.x) / unit);
+            var newY = (int) ((_worldPos.y - originPoint.y) / unit);
+            return new Point(newX, newY);
         }
 
     }
@@ -84,7 +90,14 @@ namespace FourFrame.TopDown
             return p;
         }
 
-
+        /// <summary>
+        /// Format: ({x}, {y})
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Format("({0},{1})", x, y);
+        }
     }
 
 
