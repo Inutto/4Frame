@@ -29,7 +29,8 @@ namespace FourFrame.TopDown{
 
 
         /// <summary>
-        /// READ to complete timelineInput and WRITE to record onto timeline
+        /// READ to complete timelineInput with *NO INPUT CONTROL*
+        /// , and WRITE to record onto timeline with *INPUT CONTROl*
         /// </summary>
         enum TimelineState { READ, WRITE }
         TimelineState state = TimelineState.READ;
@@ -59,6 +60,15 @@ namespace FourFrame.TopDown{
         /// Use this Method to move the Instance freely
         /// </summary>
         public virtual void Teleport()
+        {
+
+        }
+
+
+        /// <summary>
+        /// Use this Method to behave when the Instance is been interacted
+        /// </summary>
+        public virtual void OnInteract()
         {
 
         }
