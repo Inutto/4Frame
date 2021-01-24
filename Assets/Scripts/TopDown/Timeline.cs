@@ -6,7 +6,6 @@ using UniRx;
 using RotaryHeart.Lib.SerializableDictionary;
 using BasicTools.ButtonInspector;
 
-
 namespace FourFrame.TopDown
 {
 
@@ -27,7 +26,45 @@ namespace FourFrame.TopDown
         {
             
         }
+
+        #region INIT
+
+
+        private void SubscribeInstances()
+        {
+            foreach(var instance in activeInstanceList)
+            {
+                instance.OnCommand += InstanceCommandHandler;
+            }
+        }
+
+        private void UnSubscribeInstances()
+        {
+            foreach(var instance in activeInstanceList)
+            {
+                instance.OnCommand -= InstanceCommandHandler;
+            }
+        }
+
+
+
+        #endregion
+
+
+        #region EVENT
+
+
+        private void InstanceCommandHandler(BaseInfo baseInfo)
+        {
+
+        }
+
+        #endregion
+
+
     }
+
+
 
 
 

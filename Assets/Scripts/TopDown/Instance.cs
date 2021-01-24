@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UniRx;
 
 namespace FourFrame.TopDown{
 
@@ -27,6 +28,39 @@ namespace FourFrame.TopDown{
             }
         }
 
+        /// <summary>
+        /// isActive link with OnActive() and OnInactive()
+        /// </summary>
+        [SerializeField] private bool _isActive;
+        public bool isActive
+        {
+            get
+            {
+                return _isActive;
+            }
+
+            set
+            {
+                if(_isActive != value && value == true)
+                {
+                    OnActivate();
+                    _isActive = true;
+                } 
+
+                else if(_isActive != value && value == false)
+                {
+                    OnDeactivate();
+                    _isActive = false;
+                }
+
+                else
+                {
+                    // Do nothing
+                }
+            }
+        }
+        
+
 
         /// <summary>
         /// READ to complete timelineInput with *NO INPUT CONTROL*
@@ -39,7 +73,7 @@ namespace FourFrame.TopDown{
         /// <summary>
         /// Using Command Mode to Update Infor to Timeline
         /// </summary>
-        public event Action OnCommand;
+        public event Action<BaseInfo> OnCommand;
 
 
 
@@ -68,7 +102,23 @@ namespace FourFrame.TopDown{
         /// <summary>
         /// Use this Method to behave when the Instance is been interacted
         /// </summary>
-        public virtual void OnInteract()
+        protected virtual void OnInteract()
+        {
+
+        }
+
+        /// <summary>
+        /// Called when isActive turns from false to true
+        /// </summary>
+        protected virtual void OnActivate()
+        {
+
+        }
+
+        /// <summary>
+        /// Called when isActive turns from true to false
+        /// </summary>
+        protected virtual void OnDeactivate()
         {
 
         }
