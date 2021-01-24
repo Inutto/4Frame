@@ -24,7 +24,8 @@ namespace FourFrame.TopDown
             PLAYER_MOVE,
             PORTAL_RESET_POSITION,
             ITEM_TRIGGER,
-            PORTAL_TRIGGER
+            PORTAL_TRIGGER,
+            NULL
         }
 
         [Header("Core")]
@@ -141,7 +142,7 @@ namespace FourFrame.TopDown
             } else
             {
                 Debug.LogWarning("No match cases for this baseInfo");
-                return null;
+                return COMMAND_HANDLER_CASE.NULL;
             }
         }
 
