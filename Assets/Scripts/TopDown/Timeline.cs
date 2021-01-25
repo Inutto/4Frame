@@ -74,13 +74,45 @@ namespace FourFrame.TopDown
         /// <param name="baseInfo"></param>
         private void InstanceCommandHandler(BaseInfo baseInfo)
         {
-           
-
-          
+            var case_instance = BaseInfo2Case(baseInfo);
+            switch (case_instance)
+            {
+                case COMMAND_HANDLER_CASE.ITEM_TRIGGER:
+                    ItemTriggerHandler(baseInfo);
+                    break;
+                case COMMAND_HANDLER_CASE.PLAYER_MOVE:
+                    PlayerMoveHandler(baseInfo);
+                    break;
+                case COMMAND_HANDLER_CASE.PORTAL_RESET_POSITION:
+                    PortalResetPositionHandler(baseInfo );
+                    break;
+                case COMMAND_HANDLER_CASE.PORTAL_TRIGGER:
+                    PortalTriggerHandler(baseInfo);
+                    break;
+                case COMMAND_HANDLER_CASE.NULL:
+                    break;
+            }
         }
 
-        // TODO : Create Handlers for each case above
+        private void PortalTriggerHandler(BaseInfo _info)
+        {
+            // Subject Instance: Portal
+        }
 
+        private void PortalResetPositionHandler(BaseInfo _info)
+        {
+            // Subject Instance: Portal
+        }
+
+        private void PlayerMoveHandler(BaseInfo _info)
+        {
+            // Subject Instance: Player
+        }
+
+        private void ItemTriggerHandler(BaseInfo _info)
+        {
+            // Subject Instance: Item
+        }
 
 
         #endregion
@@ -98,10 +130,50 @@ namespace FourFrame.TopDown
 
         }
 
+        public void Play(BaseInfo baseInfo, bool isReverse = false)
+        {
+            switch (BaseInfo2Case(baseInfo))
+            {
+                case COMMAND_HANDLER_CASE.ITEM_TRIGGER:
+                    PortalTriggerPlayer(baseInfo, isReverse);
+                    break;
+                case COMMAND_HANDLER_CASE.PLAYER_MOVE:
+                    PlayerMovePlayer(baseInfo, isReverse);
+                    break;
+                case COMMAND_HANDLER_CASE.PORTAL_RESET_POSITION:
+                    PortalResetPositionPlayer(baseInfo, isReverse);
+                    break;
+                case COMMAND_HANDLER_CASE.PORTAL_TRIGGER:
+                    PortalTriggerPlayer(baseInfo, isReverse);
+                    break;
+            }
+        }
+
+
+        private void PortalTriggerPlayer(BaseInfo _info, bool isReverse = false)
+        {
+            // Subject Instance: Portal
+        }
+
+        private void PortalResetPositionPlayer(BaseInfo _info, bool isReverse = false)
+        {
+            // Subject Instance: Portal
+        }
+
+        private void PlayerMovePlayer(BaseInfo _info, bool isReverse = false)
+        {
+            // Subject Instance: Player
+        }
+
+        private void ItemTriggerPlayer(BaseInfo _info, bool isReverse = false)
+        {
+            // Subject Instance: Item
+        }
+
         #endregion
 
 
-        #region IMPL
+        #region TOOLS
 
 
         /// <summary>
@@ -152,6 +224,10 @@ namespace FourFrame.TopDown
             }
         }
 
+
+
+        
+
         #endregion
 
 
@@ -193,6 +269,7 @@ namespace FourFrame.TopDown
         public TickInfo()
         {
             tickInfoList = new List<BaseInfo>();
+            
         }
 
         public BaseInfo this[int index]
@@ -220,9 +297,10 @@ namespace FourFrame.TopDown
             tickInfoList.Remove(info);
         }
 
+       
 
 
-        
+
 
     }
 
@@ -243,6 +321,25 @@ namespace FourFrame.TopDown
         public BaseInfo(Instance instance)
         {
             this.instance = instance;
+        }
+
+        private T GetInstance<T>() where T : Instance
+        {
+            var _instance = this.instance;
+            var result = _instance is T;
+            if (result)
+            {
+                T instance = _instance as T;
+                return instance;
+            } else
+            {
+                Debug.LogWarning(string.Format(
+                    "Can not Get Instance of Type {0}", 
+                    typeof(T).ToString()
+                    ));
+                return null;
+            }
+           
         }
     }
 
