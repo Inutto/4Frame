@@ -495,15 +495,20 @@ namespace FourFrame.TopDown{
         #region DEBUG
 
 
-        private void OnDrawGizmos()
+        protected virtual void OnDrawGizmos()
         {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(drawPosition, drawRadius);
+            // TEMP
+            if (this is Player)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawSphere(drawPosition, drawRadius);
+            }
+                
         }
 
         private void UpdateGismosInfo(Point _pos)
         {
-            drawPosition = GridMap.Instance.Point2World(_pos);
+             drawPosition = GridMap.Instance.Point2World(_pos);
         }
         #endregion
 
