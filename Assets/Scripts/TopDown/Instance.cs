@@ -9,7 +9,6 @@ namespace FourFrame.TopDown{
     public class Instance : MonoBehaviour
     {
 
-
         #region SUPER PROPERTY
 
         /// <summary>
@@ -68,7 +67,7 @@ namespace FourFrame.TopDown{
         /// , and WRITE to record onto timeline with *INPUT CONTROl*
         /// </summary>
         public enum TimelineState { READ, WRITE }
-        public TimelineState state = TimelineState.READ;
+        public TimelineState timelineState = TimelineState.READ;
 
 
         /// <summary>
@@ -80,32 +79,141 @@ namespace FourFrame.TopDown{
 
         #endregion
 
-        
+
         #region SUPER METHOD
+
+
+        [Header("Movement Settings")]
+        public LayerMask layerMask;
+        public string state;
+        [SerializeField] protected float baseMoveTime;
+        [SerializeField] protected float targetMoveCheckRatio = 1000f;
+
+        [Space(2)]
+        [Header("Gizmos Settings")]
+        public Vector3 drawPosition;
+        public float drawRadius;
+
 
         /// <summary>
         /// Use this Method to move the Instance to adjacent Point
         /// </summary>
-        public virtual void Move()
+        public virtual void Move(Point _pos)
         {
 
+            // Distant
+            if (!IsAdjacentPos(_pos))
+            {
+                Debug.Log("Can not move for not adjacent Position");
+                return;
+            }
+
+            // Wall
+            else if (IsInstanceAt<Wall>(_pos, GridMap.Instance.collLayer))
+            {
+                Debug.Log("Can not move to pos for wall");
+                return;
+
+            }
+
+            // Item
+            else if (IsInstanceAt<Item>(_pos, GridMap.Instance.itemLayer))
+            {
+                Item item = GetInstanceAt<Item>(_pos, GridMap.Instance.itemLayer);
+                item.OnInteract(this);
+                NormalMove();
+                return;
+            }
+
+            // Normal Movement
+            else
+            {
+                NormalMove();
+            }
+
+
+            void NormalMove()
+            {
+                // Notify Timeline
+                MoveInfo moveInfo = new MoveInfo(this, position, _pos);
+                OnCommand(moveInfo);
+
+                // Movement
+                UpdateGismosInfo(_pos);
+                MoveImpl(_pos); 
+                return;
+            }
         }
 
+        
         /// <summary>
         /// Use this Method to move the Instance freely
         /// </summary>
-        public virtual void Teleport()
+        public virtual void Teleport(Point _pos)
         {
+            // Wall
+            if (IsInstanceAt<Wall>(_pos, GridMap.Instance.collLayer))
+            {
+                Debug.Log("Can not tele to pos for wall");
+                return;
 
+            }
+
+            // Item
+            else if (IsInstanceAt<Item>(_pos, GridMap.Instance.itemLayer))
+            {
+                Item item = GetInstanceAt<Item>(_pos, GridMap.Instance.itemLayer);
+                item.OnInteract(this);
+                NormalTeleport();
+                return;
+            }
+
+            else
+            {
+                NormalTeleport();
+            }
+
+
+            void NormalTeleport()
+            {
+                // Notify Timeline
+                MoveInfo teleInfo = new MoveInfo(this, position, _pos);
+                OnCommand(teleInfo);
+
+                // Teleport
+                UpdateGismosInfo(_pos);
+                TeleportImpl(_pos);
+                return;
+            }
+        }
+
+
+
+        #endregion
+
+
+        #region PROTECTED METHOD
+
+        
+
+
+        protected virtual void MoveImpl(Point _pos)
+        {
+            // Implemented by child, or use Default:
+        }
+
+        protected virtual void TeleportImpl(Point _pos)
+        {
+            // Implemented by child, or use Default:
         }
 
 
         /// <summary>
         /// Use this Method to behave when the Instance is been interacted
         /// </summary>
-        protected virtual void OnInteract()
+        protected virtual void OnInteract(Instance interactInstance)
         {
-
+            // Implemented by child.
         }
 
         /// <summary>
@@ -113,7 +221,7 @@ namespace FourFrame.TopDown{
         /// </summary>
         protected virtual void OnActivate()
         {
-
+            // Implemented by child.
         }
 
         /// <summary>
@@ -121,7 +229,7 @@ namespace FourFrame.TopDown{
         /// </summary>
         protected virtual void OnDeactivate()
         {
-
+            // Implemented by child.
         }
 
         #endregion
@@ -309,6 +417,22 @@ namespace FourFrame.TopDown{
         }
 
 
+        #endregion
+
+
+        #region DEBUG
+
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(drawPosition, drawRadius);
+        }
+
+        private void UpdateGismosInfo(Point _pos)
+        {
+            drawPosition = GridMap.Instance.Point2World(_pos);
+        }
         #endregion
 
 

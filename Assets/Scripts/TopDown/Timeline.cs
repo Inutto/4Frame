@@ -103,6 +103,12 @@ namespace FourFrame.TopDown
 
         #region IMPL
 
+
+        /// <summary>
+        /// Transfer baseInfo to event handler case
+        /// </summary>
+        /// <param name="baseInfo"></param>
+        /// <returns></returns>
         private COMMAND_HANDLER_CASE BaseInfo2Case(BaseInfo baseInfo)
         {
             var instance = baseInfo.instance;
@@ -227,6 +233,17 @@ namespace FourFrame.TopDown
     public class BaseInfo
     {
         public Instance instance;
+
+
+        public BaseInfo()
+        {
+            instance = null;
+        }
+
+        public BaseInfo(Instance instance)
+        {
+            this.instance = instance;
+        }
     }
 
 
@@ -242,11 +259,12 @@ namespace FourFrame.TopDown
 
         public MoveInfo()
         {
+            instance = null;
             start = new Point();
             end = new Point();
         }
 
-        public MoveInfo(Point start, Point end)
+        public MoveInfo(Instance instance, Point start, Point end): base(instance)
         {
             this.start = start;
             this.end = end;
@@ -266,7 +284,7 @@ namespace FourFrame.TopDown
             result = false;
         }
 
-        public InteractInfo(bool result)
+        public InteractInfo(Instance instance, bool result): base(instance)
         {
             this.result = result;
         }
