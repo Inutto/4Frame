@@ -52,6 +52,8 @@ namespace FourFrame.TopDown
             // TODO: Replace with normal get method
             timelineManager = GameObject.Find("TimelineManager")
                 .GetComponent<TimelineManager>();
+
+            SubscribeInstances();
         }
 
         #region INIT

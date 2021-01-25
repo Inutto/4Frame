@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UniRx;
+using BasicTools.ButtonInspector;
 
 namespace FourFrame.TopDown{
 
@@ -93,6 +94,10 @@ namespace FourFrame.TopDown{
         public Vector3 drawPosition;
         public float drawRadius;
 
+        protected virtual void Start()
+        {
+            SyncPosition();
+        }
 
         /// <summary>
         /// Use this Method to move the Instance to adjacent Point
@@ -103,7 +108,7 @@ namespace FourFrame.TopDown{
             switch (timelineState)
             {
                 case TimelineState.READ: // Follow the play of timeline
-                    NormalMove();
+                    DirectMove();
                     break;
                 case TimelineState.WRITE: // Record info to timeline
                     MovementCheck();
@@ -111,7 +116,7 @@ namespace FourFrame.TopDown{
             }
 
 
-            void NormalMove()
+            void DirectMove()
             {
                 // Movement
                 UpdateGismosInfo(_pos);
@@ -150,7 +155,7 @@ namespace FourFrame.TopDown{
                     Item item = GetInstanceAt<Item>(_pos, GridMap.Instance.itemLayer);
                     item.OnInteract(this);
                     NofityTimeline();
-                    NormalMove();
+                    DirectMove();
                     return;
                 }
 
@@ -158,7 +163,7 @@ namespace FourFrame.TopDown{
                 else
                 {
                     NofityTimeline();
-                    NormalMove();
+                    DirectMove();
                 }
             }
 
@@ -175,7 +180,7 @@ namespace FourFrame.TopDown{
             switch (timelineState)
             {
                 case TimelineState.READ: // Follow the play of timeline
-                    NormalTeleport();
+                    DirectTeleport();
                     break;
                 case TimelineState.WRITE: // Record info to timeline
                     TeleportCheck();
@@ -199,18 +204,18 @@ namespace FourFrame.TopDown{
                     Item item = GetInstanceAt<Item>(_pos, GridMap.Instance.itemLayer);
                     item.OnInteract(this);
                     NofityTimeline();
-                    NormalTeleport();
+                    DirectTeleport();
                     return;
                 }
 
                 else
                 {
                     NofityTimeline();
-                    NormalTeleport();
+                    DirectTeleport();
                 }
             }
 
-            void NormalTeleport()
+            void DirectTeleport()
             {
                 // Teleport
                 UpdateGismosInfo(_pos);
@@ -246,7 +251,9 @@ namespace FourFrame.TopDown{
             LeanTween.move(this.gameObject, targetPos, baseMoveTime)
                 .setEaseOutCirc();
 
-            this.position = _pos;
+            Observable.Timer(TimeSpan.FromSeconds(baseMoveTime))
+                .Subscribe(_ => this.position = _pos)
+                .AddTo(this);   
         }
 
 
@@ -446,7 +453,7 @@ namespace FourFrame.TopDown{
         /// <typeparam name="T"></typeparam>
         /// <param name="tag"></param>
         /// <returns></returns>
-        public static T[] GetInstances<T>(string tag) where T : Instance
+        public static T[] GetInstancesWithTag<T>(string tag) where T : Instance
         {
             var _instances = GameObject.FindGameObjectsWithTag(tag);
 
@@ -487,6 +494,49 @@ namespace FourFrame.TopDown{
             drawPosition = GridMap.Instance.Point2World(_pos);
         }
         #endregion
+
+
+        [Header("Button Debug")]
+        [Button("Move -> Up", "MoveUp")]
+        [SerializeField] protected bool button_1;
+
+        [Button("Move -> Down", "MoveDown")]
+        [SerializeField] protected bool button_2;
+
+        [Button("Move -> Left", "MoveLeft")]
+        [SerializeField] protected bool button_3;
+
+        [Button("Move -> Right", "MoveRight")]
+        [SerializeField] protected bool button_4;
+
+        [Button("Teleport -> Up", "TeleUp")]
+        [SerializeField] protected bool button_5;
+
+
+        public void MoveUp()
+        {
+            Move(new Point(position.x, position.y + 1));
+        }
+
+        public void MoveDown()
+        {
+            Move(new Point(position.x, position.y - 1));
+        }
+
+        public void MoveLeft()
+        {
+            Move(new Point(position.x - 1, position.y));
+        }
+
+        public void MoveRight()
+        {
+            Move(new Point(position.x + 1, position.y));
+        }
+
+        public void TeleUp()
+        {
+            Teleport(new Point(position.x, position.y + 3));
+        }
 
 
     }

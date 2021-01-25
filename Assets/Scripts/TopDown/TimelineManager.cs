@@ -29,13 +29,17 @@ namespace FourFrame.TopDown
 
         private void UpdateInstanceList()
         {
-
+            // TEMP
+            
         }
+
+
+        
 
 
         private Player GetActivePlayer()
         {
-            var players = Instance.GetInstances<Player>("Player");
+            var players = Instance.GetInstancesWithTag<Player>("Player");
             foreach (var player in players)
             {
                 if (player.isActive == true)
