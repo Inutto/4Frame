@@ -85,8 +85,7 @@ namespace FourFrame.TopDown{
 
         [Header("Movement Settings")]
         public LayerMask layerMask;
-        public string state;
-        [SerializeField] protected float baseMoveTime;
+        [SerializeField] protected float baseMoveTime = 0.5f;
         [SerializeField] protected float targetMoveCheckRatio = 1000f;
 
         [Space(2)]
@@ -101,48 +100,69 @@ namespace FourFrame.TopDown{
         public virtual void Move(Point _pos)
         {
 
-            // Distant
-            if (!IsAdjacentPos(_pos))
+            switch (timelineState)
             {
-                Debug.Log("Can not move for not adjacent Position");
-                return;
-            }
-
-            // Wall
-            else if (IsInstanceAt<Wall>(_pos, GridMap.Instance.collLayer))
-            {
-                Debug.Log("Can not move to pos for wall");
-                return;
-
-            }
-
-            // Item
-            else if (IsInstanceAt<Item>(_pos, GridMap.Instance.itemLayer))
-            {
-                Item item = GetInstanceAt<Item>(_pos, GridMap.Instance.itemLayer);
-                item.OnInteract(this);
-                NormalMove();
-                return;
-            }
-
-            // Normal Movement
-            else
-            {
-                NormalMove();
+                case TimelineState.READ: // Follow the play of timeline
+                    NormalMove();
+                    break;
+                case TimelineState.WRITE: // Record info to timeline
+                    MovementCheck();
+                    break;
             }
 
 
             void NormalMove()
             {
+                // Movement
+                UpdateGismosInfo(_pos);
+                MoveImpl(_pos);
+                return;
+            }
+
+            void NofityTimeline()
+            {
                 // Notify Timeline
                 MoveInfo moveInfo = new MoveInfo(this, position, _pos);
                 OnCommand(moveInfo);
-
-                // Movement
-                UpdateGismosInfo(_pos);
-                MoveImpl(_pos); 
-                return;
             }
+
+            // Core
+            void MovementCheck()
+            {
+                // Distant
+                if (!IsAdjacentPos(_pos))
+                {
+                    Debug.Log("Can not move for not adjacent Position");
+                    return;
+                }
+
+                // Wall
+                else if (IsInstanceAt<Wall>(_pos, GridMap.Instance.collLayer))
+                {
+                    Debug.Log("Can not move to pos for wall");
+                    return;
+
+                }
+
+                // Item
+                else if (IsInstanceAt<Item>(_pos, GridMap.Instance.itemLayer))
+                {
+                    Item item = GetInstanceAt<Item>(_pos, GridMap.Instance.itemLayer);
+                    item.OnInteract(this);
+                    NofityTimeline();
+                    NormalMove();
+                    return;
+                }
+
+                // Normal Movement
+                else
+                {
+                    NofityTimeline();
+                    NormalMove();
+                }
+            }
+
+           
         }
 
         
@@ -151,39 +171,58 @@ namespace FourFrame.TopDown{
         /// </summary>
         public virtual void Teleport(Point _pos)
         {
-            // Wall
-            if (IsInstanceAt<Wall>(_pos, GridMap.Instance.collLayer))
-            {
-                Debug.Log("Can not tele to pos for wall");
-                return;
 
+            switch (timelineState)
+            {
+                case TimelineState.READ: // Follow the play of timeline
+                    NormalTeleport();
+                    break;
+                case TimelineState.WRITE: // Record info to timeline
+                    TeleportCheck();
+                    break;
             }
 
-            // Item
-            else if (IsInstanceAt<Item>(_pos, GridMap.Instance.itemLayer))
-            {
-                Item item = GetInstanceAt<Item>(_pos, GridMap.Instance.itemLayer);
-                item.OnInteract(this);
-                NormalTeleport();
-                return;
-            }
 
-            else
+            void TeleportCheck()
             {
-                NormalTeleport();
-            }
+                // Wall
+                if (IsInstanceAt<Wall>(_pos, GridMap.Instance.collLayer))
+                {
+                    Debug.Log("Can not tele to pos for wall");
+                    return;
 
+                }
+
+                // Item
+                else if (IsInstanceAt<Item>(_pos, GridMap.Instance.itemLayer))
+                {
+                    Item item = GetInstanceAt<Item>(_pos, GridMap.Instance.itemLayer);
+                    item.OnInteract(this);
+                    NofityTimeline();
+                    NormalTeleport();
+                    return;
+                }
+
+                else
+                {
+                    NofityTimeline();
+                    NormalTeleport();
+                }
+            }
 
             void NormalTeleport()
             {
-                // Notify Timeline
-                MoveInfo teleInfo = new MoveInfo(this, position, _pos);
-                OnCommand(teleInfo);
-
                 // Teleport
                 UpdateGismosInfo(_pos);
                 TeleportImpl(_pos);
                 return;
+            }
+
+            void NofityTimeline()
+            {
+                // Notify Timeline
+                MoveInfo moveInfo = new MoveInfo(this, position, _pos);
+                OnCommand(moveInfo);
             }
         }
 
