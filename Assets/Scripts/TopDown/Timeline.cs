@@ -14,6 +14,21 @@ namespace FourFrame.TopDown
     {
 
         private TimelineManager timelineManager;
+        /// <summary>
+        /// Reference of timelineManager.currentTick
+        /// </summary>
+        public int currentTick
+        {
+            get
+            {
+                return timelineManager.currentTick;
+            }
+
+            set
+            {
+                timelineManager.currentTick = value;
+            }
+        }
 
 
         /// <summary>
@@ -28,9 +43,6 @@ namespace FourFrame.TopDown
             NULL
         }
 
-        [Header("Core")]
-        public int currentTick; // Start with 1 (rather than 0) 
-
         [Space(2)]
         [Header("Attributes")]
         public TickInfoDic tickInfoDic = new TickInfoDic();
@@ -38,7 +50,8 @@ namespace FourFrame.TopDown
         private void Start()
         {
             // TODO: Replace with normal get method
-            timelineManager = GameObject.Find("TimelineManager").GetComponent<TimelineManager>();
+            timelineManager = GameObject.Find("TimelineManager")
+                .GetComponent<TimelineManager>();
         }
 
         #region INIT
@@ -84,7 +97,7 @@ namespace FourFrame.TopDown
                     PlayerMoveHandler(baseInfo);
                     break;
                 case COMMAND_HANDLER_CASE.PORTAL_RESET_POSITION:
-                    PortalResetPositionHandler(baseInfo );
+                    PortalResetPositionHandler(baseInfo);
                     break;
                 case COMMAND_HANDLER_CASE.PORTAL_TRIGGER:
                     PortalTriggerHandler(baseInfo);
@@ -97,21 +110,35 @@ namespace FourFrame.TopDown
         private void PortalTriggerHandler(BaseInfo _info)
         {
             // Subject Instance: Portal
+            Portal portal = _info.GetInstance<Portal>();
+            InteractInfo info = _info as InteractInfo;
+
+            // Handler: Create new timeline and restore everything to that tick
+            
+            
         }
 
         private void PortalResetPositionHandler(BaseInfo _info)
         {
             // Subject Instance: Portal
+            Portal portal = _info.GetInstance<Portal>();
+            MoveInfo info = _info as MoveInfo;
+
+            // Handler: 
         }
 
         private void PlayerMoveHandler(BaseInfo _info)
         {
             // Subject Instance: Player
+            Player player = _info.GetInstance<Player>();
+            MoveInfo info = _info as MoveInfo;
         }
 
         private void ItemTriggerHandler(BaseInfo _info)
         {
             // Subject Instance: Item
+            Item item = _info.GetInstance<Item>();
+            InteractInfo info = _info as InteractInfo;
         }
 
 
@@ -153,21 +180,29 @@ namespace FourFrame.TopDown
         private void PortalTriggerPlayer(BaseInfo _info, bool isReverse = false)
         {
             // Subject Instance: Portal
+            Portal portal = _info.GetInstance<Portal>();
+            InteractInfo info = _info as InteractInfo;
         }
 
         private void PortalResetPositionPlayer(BaseInfo _info, bool isReverse = false)
         {
             // Subject Instance: Portal
+            Portal portal = _info.GetInstance<Portal>();
+            MoveInfo info = _info as MoveInfo;
         }
 
         private void PlayerMovePlayer(BaseInfo _info, bool isReverse = false)
         {
             // Subject Instance: Player
+            Player player = _info.GetInstance<Player>();
+            MoveInfo info = _info as MoveInfo;
         }
 
         private void ItemTriggerPlayer(BaseInfo _info, bool isReverse = false)
         {
             // Subject Instance: Item
+            Item item = _info.GetInstance<Item>();
+            InteractInfo info = _info as InteractInfo;
         }
 
         #endregion
@@ -225,9 +260,6 @@ namespace FourFrame.TopDown
         }
 
 
-
-        
-
         #endregion
 
 
@@ -241,20 +273,11 @@ namespace FourFrame.TopDown
 
 
 
-
-
-
-
-
-
-
-
-
     #region INFO TYPE
 
 
     [System.Serializable]
-    public class TickInfoDic : SerializableDictionaryBase<int, TickInfo> { }
+    public class TickInfoDic : SerializableDictionaryBase<int, TickInfo> {}
 
 
 
@@ -323,7 +346,12 @@ namespace FourFrame.TopDown
             this.instance = instance;
         }
 
-        private T GetInstance<T>() where T : Instance
+        /// <summary>
+        /// Return the instance with T type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T GetInstance<T>() where T : Instance
         {
             var _instance = this.instance;
             var result = _instance is T;

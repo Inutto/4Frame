@@ -8,8 +8,11 @@ namespace FourFrame.TopDown
 {
     public class TimelineManager : MonoBehaviour
     {
+        /// <summary>
+        /// Unified and Only CURRENT tick for all timeline
+        /// </summary>
         [Header("Core")]
-        public int globalTick;
+        public int currentTick; 
 
         [Header("Record List")]
         [SerializeField] public List<Instance> instancesList;
@@ -53,8 +56,25 @@ namespace FourFrame.TopDown
         #endregion
 
 
+        #region METHODS
 
-     
+        public void CreateTimeline()
+        {
+
+        }
+
+        public void Play()
+        {
+            
+        }
+
+        public void GotoTick(int tick)
+        {
+
+        }
+
+        #endregion
+
 
     }
 

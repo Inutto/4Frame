@@ -192,19 +192,33 @@ namespace FourFrame.TopDown{
         #endregion
 
 
-        #region PROTECTED METHOD
-
-        
+        #region PROTECTED METHOD (PURE VIRTUAL AREA)
 
 
+
+        /// <summary>
+        /// Overrided by childed or use default
+        /// </summary>
+        /// <param name="_pos"></param>
         protected virtual void MoveImpl(Point _pos)
         {
-            // Implemented by child, or use Default:
+            // Implemented by child, or use this Default without:
+            var targetPos = GridMap.Instance.Point2World(_pos);
+            LeanTween.move(this.gameObject, targetPos, baseMoveTime)
+                .setEaseOutCirc();
+
+            this.position = _pos;
         }
 
+
+        /// <summary>
+        /// Overrided by childed or use default
+        /// </summary>
+        /// <param name="_pos"></param>
         protected virtual void TeleportImpl(Point _pos)
         {
-            // Implemented by child, or use Default:
+            var targetPos = GridMap.Instance.Point2World(_pos);
+            this.position = _pos;
         }
 
 
