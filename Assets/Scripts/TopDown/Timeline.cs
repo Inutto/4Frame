@@ -47,6 +47,7 @@ namespace FourFrame.TopDown
         [Header("Attributes")]
         public TickInfoDic tickInfoDic = new TickInfoDic();
 
+
         private void Start()
         {
             // TODO: Replace with normal get method
@@ -54,6 +55,7 @@ namespace FourFrame.TopDown
                 .GetComponent<TimelineManager>();
 
             SubscribeInstances();
+            GotoNextTick();
         }
 
         #region INIT
@@ -75,6 +77,34 @@ namespace FourFrame.TopDown
             }
         }
 
+
+
+        #endregion
+
+
+        #region TICKINFODIC
+
+
+        /// <summary>
+        /// Init current tick (new TickInfo)
+        /// </summary>
+        /// <param name="tick"></param>
+        private void InitTickInfoDic(int tick)
+        {
+            tickInfoDic[tick] = new TickInfo();
+        }
+
+        private void RecordBaseInfo(BaseInfo _info)
+        {
+            var currentTickInfo = tickInfoDic[currentTick];
+            currentTickInfo.Add(_info);
+        }
+
+        private void GotoNextTick()
+        {
+            currentTick++;
+            InitTickInfoDic(currentTick);
+        }
 
 
         #endregion
@@ -127,7 +157,7 @@ namespace FourFrame.TopDown
             Portal portal = _info.GetInstance<Portal>();
             MoveInfo info = _info as MoveInfo;
 
-            // Handler: 
+           
         }
 
         private void PlayerMoveHandler(BaseInfo _info)
@@ -135,6 +165,16 @@ namespace FourFrame.TopDown
             // Subject Instance: Player
             Player player = _info.GetInstance<Player>();
             MoveInfo info = _info as MoveInfo;
+
+            Debug.Log(string.Format("Record Move Info: Start {0} -> End {1}",
+                info.start.ToString(),
+                info.end.ToString()
+                ));
+
+            // Handler: Goto Next Tick after saving
+            RecordBaseInfo(_info);
+            GotoNextTick();
+            
         }
 
         private void ItemTriggerHandler(BaseInfo _info)
@@ -177,6 +217,8 @@ namespace FourFrame.TopDown
                     PortalTriggerPlayer(baseInfo, isReverse);
                     break;
             }
+
+            Debug.Log(baseInfo.ToString());
         }
 
 
@@ -199,6 +241,9 @@ namespace FourFrame.TopDown
             // Subject Instance: Player
             Player player = _info.GetInstance<Player>();
             MoveInfo info = _info as MoveInfo;
+
+
+           
         }
 
         private void ItemTriggerPlayer(BaseInfo _info, bool isReverse = false)
@@ -290,7 +335,7 @@ namespace FourFrame.TopDown
     [System.Serializable]
     public class TickInfo
     {
-        private List<BaseInfo> tickInfoList;
+        public List<BaseInfo> tickInfoList;
 
         public TickInfo()
         {
@@ -312,7 +357,6 @@ namespace FourFrame.TopDown
         }
 
         
-
         public void Add(BaseInfo info)
         {
             tickInfoList.Add(info);

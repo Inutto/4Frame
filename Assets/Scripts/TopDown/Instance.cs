@@ -96,7 +96,10 @@ namespace FourFrame.TopDown{
 
         protected virtual void Start()
         {
-            SyncPosition();
+            AutoPosition();
+
+            // Debug
+            drawRadius = GridMap.Instance.unit / 4;
         }
 
         /// <summary>
@@ -390,6 +393,15 @@ namespace FourFrame.TopDown{
         {
             var syncPosition = GridMap.Instance.Point2World(_pos);
             gameObject.transform.position = syncPosition;
+        }
+
+        /// <summary>
+        /// Auto from world position to Point position
+        /// </summary>
+        protected void AutoPosition()
+        {
+            var worldPosition = gameObject.transform.position;
+            this.position = GridMap.Instance.World2Point(worldPosition);
         }
 
 
