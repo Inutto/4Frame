@@ -147,10 +147,20 @@ namespace FourFrame.TopDown
             Portal portal = _info.GetInstance<Portal>();
             InteractInfo info = _info as InteractInfo;
 
-            // Handler: Create new timeline and restore everything to that tick
+            Debug.Log(string.Format(
+                "Handler: Tele Player(by {0}) and Create new timeline(by {1})",
+                portal.name,
+                timelineManager.name
+                ));
 
-            
-            
+            RecordBaseInfo(_info);
+
+
+            // Handler: Create new timeline and restore everything to that tick
+            timelineManager.CreateTimeline(); // TEMP
+
+
+
         }
 
         private void PortalResetPositionHandler(BaseInfo _info)
@@ -158,8 +168,14 @@ namespace FourFrame.TopDown
             // Subject Instance: Portal
             Portal portal = _info.GetInstance<Portal>();
             MoveInfo info = _info as MoveInfo;
+            Debug.Log(string.Format(
+                "Handler: Tele Portal From {0} to {1}",
+                    info.start.ToString(),
+                    info.end.ToString()
+                    ));
 
-           
+            RecordBaseInfo(_info);
+
         }
 
         private void PlayerMoveHandler(BaseInfo _info)
@@ -168,10 +184,11 @@ namespace FourFrame.TopDown
             Player player = _info.GetInstance<Player>();
             MoveInfo info = _info as MoveInfo;
 
-            Debug.Log(string.Format("Record Move Info: Start {0} -> End {1}",
-                info.start.ToString(),
-                info.end.ToString()
-                ));
+            Debug.Log(string.Format(
+                "Handler: Record Move Info: Start {0} -> End {1}",
+                    info.start.ToString(),
+                    info.end.ToString()
+                    ));
 
             // Handler: Goto Next Tick after saving
             RecordBaseInfo(_info);
@@ -184,6 +201,9 @@ namespace FourFrame.TopDown
             // Subject Instance: Item
             Item item = _info.GetInstance<Item>();
             InteractInfo info = _info as InteractInfo;
+
+            // Much to be Implemented Here
+            RecordBaseInfo(_info);
         }
 
 
@@ -319,10 +339,6 @@ namespace FourFrame.TopDown
 
 
 
-
-
-
-
     #region INFO TYPE
 
 
@@ -370,9 +386,6 @@ namespace FourFrame.TopDown
         }
 
        
-
-
-
 
     }
 
@@ -451,16 +464,19 @@ namespace FourFrame.TopDown
     [System.Serializable]
     public class InteractInfo : BaseInfo
     {
-        public bool result;
+        public bool before;
+        public bool after;
 
         public InteractInfo()
         {
-            result = false;
+            before = false;
+            after = false;
         }
 
-        public InteractInfo(Instance instance, bool result): base(instance)
+        public InteractInfo(Instance instance, bool before, bool after): base(instance)
         {
-            this.result = result;
+            this.before = before;
+            this.after = after;
         }
     }
 
@@ -471,7 +487,3 @@ namespace FourFrame.TopDown
 
 
 }
-
-
-
-
