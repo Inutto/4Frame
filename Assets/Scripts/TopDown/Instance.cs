@@ -102,6 +102,10 @@ namespace FourFrame.TopDown{
             drawRadius = GridMap.Instance.unit / 4;
         }
 
+
+       
+
+
         /// <summary>
         /// Use this Method to move the Instance to adjacent Point
         /// </summary>
@@ -127,11 +131,22 @@ namespace FourFrame.TopDown{
                 return;
             }
 
-            void NofityTimeline()
+            void Nofity()
             {
                 // Notify Timeline
                 MoveInfo moveInfo = new MoveInfo(this, position, _pos);
-                OnCommand(moveInfo);
+
+                if (reactiveInstance != null)
+                {
+                    // Transfer Command To reactive instance
+                    reactiveInstance.OnRelated(new MoveInfo[] { moveInfo });
+                }
+                else
+                {
+                    // Directly Notify Timeline
+                    OnCommand(moveInfo);
+                }
+
             }
 
             // Core
@@ -157,7 +172,7 @@ namespace FourFrame.TopDown{
                 {
                     Item item = GetInstanceAt<Item>(_pos, GridMap.Instance.itemLayer);
                     item.OnInteract(this);
-                    NofityTimeline();
+                    Nofity();
                     DirectMove();
                     return;
                 }
@@ -165,7 +180,7 @@ namespace FourFrame.TopDown{
                 // Normal Movement
                 else
                 {
-                    NofityTimeline();
+                    Nofity();
                     DirectMove();
                 }
             }
@@ -206,14 +221,14 @@ namespace FourFrame.TopDown{
                 {
                     Item item = GetInstanceAt<Item>(_pos, GridMap.Instance.itemLayer);
                     item.OnInteract(this);
-                    NofityTimeline();
+                    Nofity();
                     DirectTeleport();
                     return;
                 }
 
                 else
                 {
-                    NofityTimeline();
+                    Nofity();
                     DirectTeleport();
                 }
             }
@@ -226,11 +241,22 @@ namespace FourFrame.TopDown{
                 return;
             }
 
-            void NofityTimeline()
+            void Nofity()
             {
                 // Notify Timeline
                 MoveInfo moveInfo = new MoveInfo(this, position, _pos);
-                OnCommand(moveInfo);
+
+                if (reactiveInstance != null)
+                {
+                    // Transfer Command To reactive instance
+                    reactiveInstance.OnRelated(new MoveInfo[] { moveInfo });
+                }
+                else
+                {
+                    // Directly Notify Timeline
+                    OnCommand(moveInfo);
+                }
+
             }
         }
 
@@ -241,7 +267,11 @@ namespace FourFrame.TopDown{
 
         #region PROTECTED METHOD (PURE VIRTUAL AREA)
 
-
+        /// <summary>
+        /// The instance to notify with Command
+        /// </summary>
+        [Header("Relation Settings")]
+        protected Instance reactiveInstance;
 
         /// <summary>
         /// Overrided by childed or use default
@@ -294,6 +324,18 @@ namespace FourFrame.TopDown{
         {
             // Implemented by child.
         }
+
+
+        /// <summary>
+        /// If this player has related with another instance, then all the 
+        /// Command will be sent to this instance to deal with in this func
+        /// </summary>
+        protected virtual void OnRelated(BaseInfo[] _infoGroup)
+        {
+            // Implemented if any instance is related to current Instance: transfer message
+
+        }
+
 
         #endregion
 
@@ -513,47 +555,7 @@ namespace FourFrame.TopDown{
         #endregion
 
 
-        [Header("Button Debug")]
-        [Button("Move -> Up", "MoveUp")]
-        [SerializeField] protected bool button_1;
-
-        [Button("Move -> Down", "MoveDown")]
-        [SerializeField] protected bool button_2;
-
-        [Button("Move -> Left", "MoveLeft")]
-        [SerializeField] protected bool button_3;
-
-        [Button("Move -> Right", "MoveRight")]
-        [SerializeField] protected bool button_4;
-
-        [Button("Teleport -> Up", "TeleUp")]
-        [SerializeField] protected bool button_5;
-
-
-        public void MoveUp()
-        {
-            Move(new Point(position.x, position.y + 1));
-        }
-
-        public void MoveDown()
-        {
-            Move(new Point(position.x, position.y - 1));
-        }
-
-        public void MoveLeft()
-        {
-            Move(new Point(position.x - 1, position.y));
-        }
-
-        public void MoveRight()
-        {
-            Move(new Point(position.x + 1, position.y));
-        }
-
-        public void TeleUp()
-        {
-            Teleport(new Point(position.x, position.y + 3));
-        }
+       
 
 
     }

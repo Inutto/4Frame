@@ -122,30 +122,7 @@ namespace FourFrame.TopDown
         #region DEBUG
 
 
-        public new void MoveUp()
-        {
-            Move(new Point(position.x, position.y + 1));
-        }
-
-        public new void MoveDown()
-        {
-            Move(new Point(position.x, position.y - 1));
-        }
-
-        public new void MoveLeft()
-        {
-            Move(new Point(position.x - 1, position.y));
-        }
-
-        public new void MoveRight()
-        {
-            Move(new Point(position.x + 1, position.y));
-        }
-
-        public new void TeleUp()
-        {
-            Teleport(new Point(position.x, position.y + 3));
-        }
+       
 
 
         #endregion

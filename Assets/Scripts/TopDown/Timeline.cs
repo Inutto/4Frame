@@ -154,11 +154,7 @@ namespace FourFrame.TopDown
                 ));
 
             RecordBaseInfo(_info);
-
-
-            // Handler: Create new timeline and restore everything to that tick
             timelineManager.CreateTimeline(); // TEMP
-
 
 
         }
@@ -175,7 +171,7 @@ namespace FourFrame.TopDown
                     ));
 
             RecordBaseInfo(_info);
-
+            GotoNextTick();
         }
 
         private void PlayerMoveHandler(BaseInfo _info)
@@ -204,6 +200,7 @@ namespace FourFrame.TopDown
 
             // Much to be Implemented Here
             RecordBaseInfo(_info);
+            GotoNextTick();
         }
 
 
