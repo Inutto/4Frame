@@ -209,6 +209,68 @@ namespace FourFrame.TopDown
 
         #region PLAY
 
+
+        [Button("Play", "PlayTest")]
+        public bool button_1;
+
+        public void PlayTest()
+        {
+            Play();
+        }
+
+
+        /// <summary>
+        /// Play the whole tickInfodic with desinated order
+        /// </summary>
+        /// <param name="isReverse"></param>
+        public void Play(bool isReverse = false)
+        {
+            StartCoroutine(Play(1, tickInfoDic.Count, 0.3f, isReverse));
+        }
+
+
+        public IEnumerator Play(int startTick, int endTick, float intervalTime, bool isReverse = false)
+        {
+            // Reverse
+            if (isReverse)
+            {
+                for (var i = endTick; i >= startTick; i--)
+                {
+                    Play(i, isReverse); // isReverse == true
+                    yield return new WaitForSeconds(intervalTime);
+                }
+
+            }
+
+            // Not Reverse
+            else
+            {
+
+                for (var i = startTick; i <= endTick; i++)
+                {
+                    Play(i, isReverse); // isReverse == false
+                    yield return new WaitForSeconds(intervalTime);
+                }
+            }
+        }
+
+
+
+        public void Play(int tick, bool isReverse = false)
+        {
+            if (tickInfoDic.ContainsKey(tick))
+            {
+                Play(tickInfoDic[tick], isReverse);
+            } else
+            {
+                Debug.LogWarning(string.Format(
+               "Can not find tick {0} Info in current timeline",
+               tick));
+                return;
+            }
+        }
+
+
         /// <summary>
         /// Play the tick content with positive or reverse order
         /// </summary>
@@ -216,6 +278,15 @@ namespace FourFrame.TopDown
         /// <param name="isReverse"></param>
         public void Play(TickInfo _tickInfo, bool isReverse = false)
         {
+            // Play All the Content at the same time (Physics Time)
+
+
+            foreach(var baseInfo in _tickInfo.tickInfoList)
+            {
+                Play(baseInfo, isReverse);
+            }
+
+
 
         }
 
@@ -246,6 +317,8 @@ namespace FourFrame.TopDown
             // Subject Instance: Portal
             Portal portal = _info.GetInstance<Portal>();
             InteractInfo info = _info as InteractInfo;
+
+
         }
 
         private void PortalResetPositionPlayer(BaseInfo _info, bool isReverse = false)
@@ -261,8 +334,27 @@ namespace FourFrame.TopDown
             Player player = _info.GetInstance<Player>();
             MoveInfo info = _info as MoveInfo;
 
+            player.timelineState = Instance.TimelineState.READ;
 
-           
+            Point start, end;
+            if (!isReverse)
+            {
+                start = info.start;
+                end = info.end;
+            } else
+            {
+                start = info.end;
+                end = info.start;
+            }
+
+            // Core
+            player.position = start;
+            player.Move(end);
+
+            player.timelineState = Instance.TimelineState.WRITE;
+
+
+
         }
 
         private void ItemTriggerPlayer(BaseInfo _info, bool isReverse = false)
