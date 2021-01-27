@@ -30,6 +30,13 @@ namespace FourFrame.TopDown
             }
         }
 
+        [SerializeField] private bool isPlaying;
+
+        [Button("Play", "PlayTest")]
+        public bool button_1;
+
+        [Button("Undo", "Undo")]
+        public bool button_2;
 
         /// <summary>
         /// Analyze BaseInfo Type and return this enum to pass to different minor handler
@@ -106,6 +113,22 @@ namespace FourFrame.TopDown
         {
             currentTick++;
             InitTickInfoDic(currentTick);
+        }
+
+        public void Undo()
+        {
+            var lastTick = currentTick - 1;
+
+            if (lastTick > 0 && !isPlaying)
+            {
+                StartCoroutine(Play(lastTick, lastTick, 0.3f, true));
+                tickInfoDic.Remove(currentTick);
+                currentTick -= 1;
+            }
+            else
+            {
+                Debug.LogWarning("Can not undo now");
+            }
         }
 
 
@@ -210,8 +233,7 @@ namespace FourFrame.TopDown
         #region PLAY
 
 
-        [Button("Play", "PlayTest")]
-        public bool button_1;
+        
 
         public void PlayTest()
         {
@@ -231,6 +253,8 @@ namespace FourFrame.TopDown
 
         public IEnumerator Play(int startTick, int endTick, float intervalTime, bool isReverse = false)
         {
+
+            isPlaying = true;
             // Reverse
             if (isReverse)
             {
@@ -239,6 +263,8 @@ namespace FourFrame.TopDown
                     Play(i, isReverse); // isReverse == true
                     yield return new WaitForSeconds(intervalTime);
                 }
+
+                isPlaying = false;
 
             }
 
@@ -251,6 +277,8 @@ namespace FourFrame.TopDown
                     Play(i, isReverse); // isReverse == false
                     yield return new WaitForSeconds(intervalTime);
                 }
+
+                isPlaying = false;
             }
         }
 
@@ -269,7 +297,7 @@ namespace FourFrame.TopDown
                 return;
             }
         }
-
+        
 
         /// <summary>
         /// Play the tick content with positive or reverse order
