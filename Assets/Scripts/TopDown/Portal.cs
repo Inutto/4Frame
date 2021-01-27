@@ -16,6 +16,8 @@ namespace FourFrame.TopDown
             if(_ins.gameObject.tag == "Player")
             {
                 // Tele Player to Another Portal after move complete
+
+                // OnCommand For Next Tick?
             }
         }
     }
