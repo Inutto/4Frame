@@ -198,7 +198,7 @@ namespace FourFrame.TopDown{
         /// The instance to notify with Command
         /// </summary>
         [Header("Relation Settings")]
-        protected Instance reactiveInstance;
+        [SerializeField] protected Instance reactiveInstance;
 
         /// <summary>
         /// Overrided by childed or use default
@@ -408,6 +408,42 @@ namespace FourFrame.TopDown{
                 _rxInstance.name,
                 _target.name));
         }
+
+        protected void RemoveReactiveInstance(Instance _target, Instance _rxInstance)
+        {
+            if(_target.reactiveInstance == _rxInstance)
+            {
+                _target.reactiveInstance = _rxInstance.reactiveInstance;
+            } else
+            {
+                var end = _target;
+                while(end.reactiveInstance != _rxInstance && end != null)
+                {
+                    end = end.reactiveInstance;
+
+                    if(end == null)
+                    {
+                        // end == null
+                        Debug.LogWarning(string.Format("Can not remove {0} in {1}'s rx chain: Not Found",
+                            _rxInstance.name,
+                            _target.name));
+                        return;
+                    }
+
+
+                    if(end.reactiveInstance == _rxInstance)
+                    {
+                        end.reactiveInstance = _rxInstance.reactiveInstance;
+                        return;
+                    }
+                }
+
+               
+            }
+
+        }
+
+
 
         protected void OnCommandAll(List<BaseInfo> _infoList)
         {

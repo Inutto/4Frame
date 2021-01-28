@@ -12,8 +12,9 @@ namespace FourFrame.TopDown
 
     public class Timeline : MonoBehaviour
     {
-
-        private TimelineManager timelineManager;
+        [Header("Timeline Settings")]
+        [SerializeField] private TimelineManager timelineManager;
+        [SerializeField] private bool canCreateTimeline = true;
         /// <summary>
         /// Reference of timelineManager.currentTick
         /// </summary>
@@ -61,14 +62,14 @@ namespace FourFrame.TopDown
             timelineManager = GameObject.Find("TimelineManager")
                 .GetComponent<TimelineManager>();
 
-            SubscribeInstances();
+            
             GotoNextTick();
         }
 
         #region INIT
 
 
-        private void SubscribeInstances()
+        public void SubscribeInstances()
         {
             foreach(var instance in timelineManager.instancesList)
             {
@@ -76,13 +77,25 @@ namespace FourFrame.TopDown
             }
         }
 
-        private void UnSubscribeInstances()
+        public void UnSubscribeInstances()
         {
             foreach(var instance in timelineManager.instancesList)
             {
                 instance.OnCommand -= InstanceCommandHandler;
             }
         }
+
+        public void SubscribeInstance(Instance instance)
+        {
+            instance.OnCommand += InstanceCommandHandler;
+        }
+
+        public void UnSubscribeInstance(Instance instance)
+        {
+            instance.OnCommand -= InstanceCommandHandler;
+        }
+
+
 
         
 
@@ -176,15 +189,23 @@ namespace FourFrame.TopDown
 
             var creationTick = info.after;
             var targetPortal = portal.theOtherPortal;
+            var targetPoint = targetPortal.position;
 
             Debug.Log(string.Format(
-                "Handler: Create new Timeline at tick(by {0})",
-                portal.name,
-                timelineManager.name
+                "Handler: Create new Timeline at tick {0} (by {1})",
+                currentTick,
+                portal.name
                 ));
 
             RecordBaseInfo(_info);
-            timelineManager.CreateTimeline(); // TEMP
+
+            if (canCreateTimeline)
+            {
+                timelineManager.CreateNewActivePlayer(targetPoint);
+                timelineManager.CreateTimeline(creationTick); // TEMP
+                canCreateTimeline = false;
+            }
+           
 
 
         }

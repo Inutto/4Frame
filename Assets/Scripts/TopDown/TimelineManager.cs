@@ -12,14 +12,17 @@ namespace FourFrame.TopDown
         /// Unified and Only CURRENT tick for all timeline
         /// </summary>
         [Header("Core")]
-        public int currentTick; 
+        public int currentTick;
+        public Timeline main;
 
         [Header("Record List")]
         [SerializeField] public List<Instance> instancesList;
 
         private void Start()
         {
+            main = GetComponentInChildren<Timeline>();
             UpdateInstanceList();
+            main.SubscribeInstances();
         }
 
 
@@ -29,12 +32,19 @@ namespace FourFrame.TopDown
 
         private void UpdateInstanceList()
         {
-            // TEMP
+            instancesList.Clear();
+
+            var player = GetActivePlayer();
+            var portals = Instance.GetInstancesWithTag<Portal>("Portal");
+
+            instancesList.Add(player);
+            foreach(var portal in portals)
+            {
+                instancesList.Add(portal);
+            }
             
         }
 
-
-        
 
 
         private Player GetActivePlayer()
@@ -51,7 +61,7 @@ namespace FourFrame.TopDown
             return null;
         }
 
-        private Portal GetPortal(string portalType)
+        private Portal GetPortal()
         {
             var portals = Instance.GetInstancesWithTag<Portal>("Portal");
            
@@ -64,9 +74,41 @@ namespace FourFrame.TopDown
 
         #region METHODS
 
-        public void CreateTimeline()
+        public void CreateTimeline(int _tick)
         {
-            Debug.Log("Test Here");
+
+            var oldTimeline = main;
+
+            // Creation
+            var newTimeline = Instantiate(oldTimeline, this.transform);
+            newTimeline.tickInfoDic.Clear();
+            currentTick = _tick;
+
+            // Subscription
+            newTimeline.SubscribeInstances();
+            oldTimeline.UnSubscribeInstances();
+
+            // Resign Main
+            this.main = newTimeline;
+
+
+
+        }
+
+        public void CreateNewActivePlayer(Point newPosition)
+        {
+            var oldPlayer = GetActivePlayer();
+            var newPlayer = Instantiate(oldPlayer, oldPlayer.transform.parent);
+
+            // Old
+            oldPlayer.isActive = false;
+            main.UnSubscribeInstance(oldPlayer);
+
+            // New
+            newPlayer.position = newPosition;
+            newPlayer.isActive = true;
+            UpdateInstanceList();
+
         }
 
         public void Play()

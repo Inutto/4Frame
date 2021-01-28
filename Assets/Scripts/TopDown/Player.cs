@@ -16,6 +16,12 @@ namespace FourFrame.TopDown
         public string state; // used by FSM
         public Point target;
 
+        private void Awake()
+        {
+            isActive = true;
+        }
+
+
         protected override void Start()
         {
             // Init 
@@ -29,7 +35,7 @@ namespace FourFrame.TopDown
             // isActive for Player: 
             //  - true -> Control and Record Brain
             //  - false -> Other Timeline and in READ mode
-            isActive = true;
+            
             timelineState = TimelineState.WRITE;
         }
 
@@ -39,7 +45,7 @@ namespace FourFrame.TopDown
             switch (state)
             {
                 case "idle":
-                    if (timelineState == TimelineState.WRITE) CheckMovementInput();
+                    if (timelineState == TimelineState.WRITE && isActive) CheckMovementInput();
                     break;
                 case "move":
                     break;

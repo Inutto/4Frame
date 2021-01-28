@@ -18,13 +18,27 @@ namespace FourFrame.TopDown
         public int creationTick;
 
 
+        private Player player;
+
+
         protected override void OnInteract(Instance _ins)
         {
-            if(_ins.gameObject.tag == "Player")
+            if (isActive)
             {
-                Player player = _ins.gameObject.GetComponent<Player>();
-                AddReactiveInstance(player, this);
-            }
+                if (_ins.gameObject.tag == "Player")
+                {
+                    player = _ins.gameObject.GetComponent<Player>();
+                    AddReactiveInstance(player, this);
+                }
+
+                isActive = false;
+
+                Observable.Timer(TimeSpan.FromSeconds(1f))
+                    .Where(_ => isActive == false)
+                    .Subscribe(_ => isActive = true)
+                    .AddTo(this);
+            } 
+
         }
 
 
@@ -32,9 +46,10 @@ namespace FourFrame.TopDown
         {
             InteractInfo _info = new InteractInfo(this, 0, theOtherPortal.creationTick);
             _infoList.Add(_info);
-
+            RemoveReactiveInstance(player, this);
             OnCommandAll(_infoList);
 
+            
         }
         
     }
