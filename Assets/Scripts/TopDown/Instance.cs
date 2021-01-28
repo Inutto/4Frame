@@ -86,7 +86,7 @@ namespace FourFrame.TopDown{
 
         [Header("Movement Settings")]
         public LayerMask layerMask;
-        [SerializeField] protected float baseMoveTime = 0.5f;
+        [SerializeField] public float baseMoveTime = 0.5f; // I am sorry, I am so sorry......
         [SerializeField] protected float targetMoveCheckRatio = 1000f;
 
         [Space(2)]

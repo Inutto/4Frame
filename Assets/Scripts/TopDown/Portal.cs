@@ -48,8 +48,6 @@ namespace FourFrame.TopDown
             _infoList.Add(_info);
             RemoveReactiveInstance(player, this);
             OnCommandAll(_infoList);
-
-            
         }
         
     }

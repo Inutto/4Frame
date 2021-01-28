@@ -231,6 +231,7 @@ MonoBehaviour:
   targetMoveCheckRatio: 1000
   drawPosition: {x: 0, y: 0, z: 0}
   drawRadius: 0
+  reactiveInstance: {fileID: 0}
 --- !u!61 &7235043
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -300,6 +301,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5bb29e80f1bc7a48abf6498e8ee32e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timelineManager: {fileID: 0}
+  canCreateTimeline: 1
   isPlaying: 0
   button_1: 0
   button_2: 0
@@ -523,10 +526,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentTick: 0
   main: {fileID: 0}
-  instancesList:
-  - {fileID: 980574077}
-  - {fileID: 1273919942}
-  - {fileID: 1103759598}
+  instancesList: []
 --- !u!1 &758572415
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,6 +615,7 @@ MonoBehaviour:
   targetMoveCheckRatio: 1000
   drawPosition: {x: 0, y: 0, z: 0}
   drawRadius: 0
+  reactiveInstance: {fileID: 0}
   player: {fileID: 0}
   state: 
   target:
@@ -757,7 +758,7 @@ MonoBehaviour:
   _position:
     x: 0
     y: 0
-  _isActive: 0
+  _isActive: 1
   timelineState: 0
   layerMask:
     serializedVersion: 2
@@ -766,6 +767,7 @@ MonoBehaviour:
   targetMoveCheckRatio: 1000
   drawPosition: {x: 0, y: 0, z: 0}
   drawRadius: 0
+  reactiveInstance: {fileID: 0}
   theOtherPortal: {fileID: 1273919942}
   creationTick: 1
 --- !u!212 &1103759599
@@ -867,7 +869,7 @@ MonoBehaviour:
   _position:
     x: 0
     y: 0
-  _isActive: 0
+  _isActive: 1
   timelineState: 0
   layerMask:
     serializedVersion: 2
@@ -876,6 +878,7 @@ MonoBehaviour:
   targetMoveCheckRatio: 1000
   drawPosition: {x: 0, y: 0, z: 0}
   drawRadius: 0
+  reactiveInstance: {fileID: 0}
   theOtherPortal: {fileID: 1103759598}
   creationTick: 1
 --- !u!212 &1273919943

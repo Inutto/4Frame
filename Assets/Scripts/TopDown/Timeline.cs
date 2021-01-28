@@ -201,9 +201,17 @@ namespace FourFrame.TopDown
 
             if (canCreateTimeline)
             {
-                timelineManager.CreateNewActivePlayer(targetPoint);
-                timelineManager.CreateTimeline(creationTick); // TEMP
-                canCreateTimeline = false;
+
+                // This is totally bullshit here but we will fix here
+                Player player = timelineManager.instancesList[0] as Player;
+                Observable.Timer(TimeSpan.FromSeconds(player.baseMoveTime/2))
+                    .Subscribe(_ =>
+                    {
+                        timelineManager.CreateNewActivePlayer(targetPoint);
+                        timelineManager.CreateTimeline(creationTick); // TEMP
+                        canCreateTimeline = false;
+                    }
+                    ).AddTo(this);         
             }
            
 
