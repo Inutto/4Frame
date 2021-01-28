@@ -62,8 +62,8 @@ namespace FourFrame.TopDown
             timelineManager = GameObject.Find("TimelineManager")
                 .GetComponent<TimelineManager>();
 
-            
-            GotoNextTick();
+
+            InitTickInfoDic(1);
         }
 
         #region INIT
@@ -111,7 +111,7 @@ namespace FourFrame.TopDown
         /// Init current tick (new TickInfo)
         /// </summary>
         /// <param name="tick"></param>
-        private void InitTickInfoDic(int tick)
+        public void InitTickInfoDic(int tick)
         {
             tickInfoDic[tick] = new TickInfo();
         }
@@ -122,15 +122,10 @@ namespace FourFrame.TopDown
             currentTickInfo.Add(_info);
             if(_info.isTickEnd == true)
             {
-                GotoNextTick();
+                timelineManager.GotoNextTick();
             }
         }
 
-        private void GotoNextTick()
-        {
-            currentTick++;
-            InitTickInfoDic(currentTick);
-        }
 
         public void Undo()
         {
@@ -314,8 +309,6 @@ namespace FourFrame.TopDown
                 isPlaying = false;
             }
         }
-
-
 
         public void Play(int tick, bool isReverse = false)
         {

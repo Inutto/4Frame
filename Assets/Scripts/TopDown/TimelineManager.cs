@@ -12,15 +12,17 @@ namespace FourFrame.TopDown
         /// Unified and Only CURRENT tick for all timeline
         /// </summary>
         [Header("Core")]
-        public int currentTick;
+        public int currentTick = 1;
         public Timeline main;
 
         [Header("Record List")]
         [SerializeField] public List<Instance> instancesList;
+        [SerializeField] public List<Timeline> timelineList;
 
         private void Start()
         {
             main = GetComponentInChildren<Timeline>();
+            timelineList.Add(main);
             UpdateInstanceList();
             main.SubscribeInstances();
         }
@@ -83,6 +85,7 @@ namespace FourFrame.TopDown
             var newTimeline = Instantiate(oldTimeline, this.transform);
             newTimeline.tickInfoDic.Clear();
             currentTick = _tick;
+            timelineList.Add(newTimeline);
 
             // Subscription
             newTimeline.SubscribeInstances();
@@ -119,6 +122,29 @@ namespace FourFrame.TopDown
         public void GotoTick(int tick)
         {
 
+        }
+
+        public void GotoNextTick()
+        {
+            // Play All
+            foreach(var timeline in timelineList)
+            {
+                if (!(timeline == main))
+                {
+                    timeline.Play(currentTick);
+                }
+            }
+
+            // Next Tick
+            currentTick++;
+            foreach(var timeline in timelineList)
+            {
+                if (!timeline.tickInfoDic.ContainsKey(currentTick))
+                {
+                    timeline.InitTickInfoDic(currentTick);
+                }
+                
+            }
         }
 
         #endregion
