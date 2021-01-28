@@ -63,7 +63,7 @@ namespace FourFrame.TopDown
                 .GetComponent<TimelineManager>();
 
 
-            InitEmptyTickInfoDic(1);
+            InitEmptyTickInfoDic(currentTick);
         }
 
         #region INIT
@@ -197,7 +197,7 @@ namespace FourFrame.TopDown
             if (canCreateTimeline)
             {
 
-                // This is totally bullshit here but we will fix here
+                // TODO: This is totally bullshit here but we will fix here
                 Player player = timelineManager.instancesList[0] as Player;
                 Observable.Timer(TimeSpan.FromSeconds(player.baseMoveTime/2))
                     .Subscribe(_ =>
