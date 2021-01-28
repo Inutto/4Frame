@@ -63,7 +63,7 @@ namespace FourFrame.TopDown
                 .GetComponent<TimelineManager>();
 
 
-            InitTickInfoDic(1);
+            InitEmptyTickInfoDic(1);
         }
 
         #region INIT
@@ -111,7 +111,7 @@ namespace FourFrame.TopDown
         /// Init current tick (new TickInfo)
         /// </summary>
         /// <param name="tick"></param>
-        public void InitTickInfoDic(int tick)
+        public void InitEmptyTickInfoDic(int tick)
         {
             tickInfoDic[tick] = new TickInfo();
         }
@@ -133,9 +133,9 @@ namespace FourFrame.TopDown
 
             if (lastTick > 0 && !isPlaying)
             {
-                StartCoroutine(Play(lastTick, lastTick, 0.3f, true));
                 tickInfoDic.Remove(currentTick);
-                currentTick -= 1;
+                timelineManager.GotoPreviousTick();
+                InitEmptyTickInfoDic(currentTick);
             }
             else
             {
@@ -403,6 +403,7 @@ namespace FourFrame.TopDown
 
             // Core
             player.position = start;
+            player.target = end;
             player.Move(end);
 
             player.timelineState = Instance.TimelineState.WRITE;

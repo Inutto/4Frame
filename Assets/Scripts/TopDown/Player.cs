@@ -107,17 +107,11 @@ namespace FourFrame.TopDown
             // base.MoveImpl(_pos);
 
             var targetPos = GridMap.Instance.Point2World(_pos);
+            
+            state = "move";
+            LeanTween.move(this.gameObject, targetPos, baseMoveTime).setEaseOutCirc();
 
-            switch (timelineState)
-            {
-                case TimelineState.WRITE:
-                    state = "move";
-                    LeanTween.move(this.gameObject, targetPos, baseMoveTime).setEaseOutCirc();
-                    break;
-                case TimelineState.READ:
-                    LeanTween.move(this.gameObject, targetPos, baseMoveTime).setEaseOutCirc();
-                    break;
-            }
+            
            
         }
 

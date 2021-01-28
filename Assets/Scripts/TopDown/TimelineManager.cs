@@ -131,7 +131,7 @@ namespace FourFrame.TopDown
             {
                 if (!(timeline == main))
                 {
-                    timeline.Play(currentTick);
+                    StartCoroutine(timeline.Play(currentTick, currentTick, 0.3f));
                 }
             }
 
@@ -139,12 +139,55 @@ namespace FourFrame.TopDown
             currentTick++;
             foreach(var timeline in timelineList)
             {
-                if (!timeline.tickInfoDic.ContainsKey(currentTick))
+                var hasRecord = timeline.tickInfoDic.ContainsKey(currentTick);
+
+                if (hasRecord)
                 {
-                    timeline.InitTickInfoDic(currentTick);
+                    var tickInfoListIsEmpty = timeline.tickInfoDic[currentTick].tickInfoList.Count == 0;
+
+                    if (tickInfoListIsEmpty)
+                    {
+                        timeline.InitEmptyTickInfoDic(currentTick);
+                    }
+                } else
+                {
+                    timeline.InitEmptyTickInfoDic(currentTick);
                 }
                 
             }
+        }
+
+        public void GotoPreviousTick()
+        {
+            // Play All
+            foreach (var timeline in timelineList)
+            {
+                StartCoroutine(timeline.Play(currentTick-1, currentTick-1, 0.3f, true));
+            }
+
+            // Next Tick
+            currentTick--;
+            foreach (var timeline in timelineList)
+            {
+                var hasRecord = timeline.tickInfoDic.ContainsKey(currentTick);
+
+                if (hasRecord)
+                {
+                    var tickInfoListIsEmpty = timeline.tickInfoDic[currentTick].tickInfoList.Count == 0;
+
+                    if (tickInfoListIsEmpty)
+                    {
+                        timeline.InitEmptyTickInfoDic(currentTick);
+                    }
+                }
+                else
+                {
+                    timeline.InitEmptyTickInfoDic(currentTick);
+                }
+
+            }
+
+           
         }
 
         #endregion
