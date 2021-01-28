@@ -107,6 +107,10 @@ namespace FourFrame.TopDown
         {
             var currentTickInfo = tickInfoDic[currentTick];
             currentTickInfo.Add(_info);
+            if(_info.isTickEnd == true)
+            {
+                GotoNextTick();
+            }
         }
 
         private void GotoNextTick()
@@ -170,8 +174,11 @@ namespace FourFrame.TopDown
             Portal portal = _info.GetInstance<Portal>();
             InteractInfo info = _info as InteractInfo;
 
+            var creationTick = info.after;
+            var targetPortal = portal.theOtherPortal;
+
             Debug.Log(string.Format(
-                "Handler: Tele Player(by {0}) and Create new timeline(by {1})",
+                "Handler: Create new Timeline at tick(by {0})",
                 portal.name,
                 timelineManager.name
                 ));
@@ -194,7 +201,6 @@ namespace FourFrame.TopDown
                     ));
 
             RecordBaseInfo(_info);
-            GotoNextTick();
         }
 
         private void PlayerMoveHandler(BaseInfo _info)
@@ -211,7 +217,6 @@ namespace FourFrame.TopDown
 
             // Handler: Goto Next Tick after saving
             RecordBaseInfo(_info);
-            GotoNextTick();
             
         }
 
@@ -223,7 +228,6 @@ namespace FourFrame.TopDown
 
             // Much to be Implemented Here
             RecordBaseInfo(_info);
-            GotoNextTick();
         }
 
 
@@ -513,16 +517,26 @@ namespace FourFrame.TopDown
     public class BaseInfo
     {
         public Instance instance;
+        public bool isTickEnd = true; // Default to be true
 
 
         public BaseInfo()
         {
             instance = null;
+            isTickEnd = true;
+
         }
 
         public BaseInfo(Instance instance)
         {
             this.instance = instance;
+            this.isTickEnd = true;
+        }
+
+        public BaseInfo(Instance instance, bool isTickEnd)
+        {
+            this.instance = instance;
+            this.isTickEnd = isTickEnd;
         }
 
         /// <summary>
@@ -568,7 +582,7 @@ namespace FourFrame.TopDown
             end = new Point();
         }
 
-        public MoveInfo(Instance instance, Point start, Point end): base(instance)
+        public MoveInfo(Instance instance, Point start, Point end, bool isTickEnd = true): base(instance, isTickEnd)
         {
             this.start = start;
             this.end = end;
@@ -581,16 +595,16 @@ namespace FourFrame.TopDown
     [System.Serializable]
     public class InteractInfo : BaseInfo
     {
-        public bool before;
-        public bool after;
+        public int before;
+        public int after;
 
         public InteractInfo()
         {
-            before = false;
-            after = false;
+            before = 0;
+            after = 0;
         }
 
-        public InteractInfo(Instance instance, bool before, bool after): base(instance)
+        public InteractInfo(Instance instance, int before, int after, bool isTickEnd = true): base(instance, isTickEnd)
         {
             this.before = before;
             this.after = after;

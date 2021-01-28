@@ -132,18 +132,16 @@ namespace FourFrame.TopDown{
             }
 
             void Nofity()
-            {
-                // Notify Timeline
-                MoveInfo moveInfo = new MoveInfo(this, position, _pos);
-
+            {          
                 if (reactiveInstance != null)
                 {
                     // Transfer Command To reactive instance
-                    reactiveInstance.OnRelated(new MoveInfo[] { moveInfo });
+                    MoveInfo moveInfo = new MoveInfo(this, position, _pos, false);
+                    reactiveInstance.OnRelated(new List<BaseInfo>{moveInfo});
                 }
                 else
                 {
-                    // Directly Notify Timeline
+                    MoveInfo moveInfo = new MoveInfo(this, position, _pos, true);
                     OnCommand(moveInfo);
                 }
 
@@ -189,77 +187,6 @@ namespace FourFrame.TopDown{
         }
 
         
-        /// <summary>
-        /// Use this Method to move the Instance freely
-        /// </summary>
-        public virtual void Teleport(Point _pos)
-        {
-
-            switch (timelineState)
-            {
-                case TimelineState.READ: // Follow the play of timeline
-                    DirectTeleport();
-                    break;
-                case TimelineState.WRITE: // Record info to timeline
-                    TeleportCheck();
-                    break;
-            }
-
-
-            void TeleportCheck()
-            {
-                // Wall
-                if (IsInstanceAt<Wall>(_pos, GridMap.Instance.collLayer))
-                {
-                    Debug.Log("Can not tele to pos for wall");
-                    return;
-
-                }
-
-                // Item
-                else if (IsInstanceAt<Item>(_pos, GridMap.Instance.itemLayer))
-                {
-                    Item item = GetInstanceAt<Item>(_pos, GridMap.Instance.itemLayer);
-                    item.OnInteract(this);
-                    Nofity();
-                    DirectTeleport();
-                    return;
-                }
-
-                else
-                {
-                    Nofity();
-                    DirectTeleport();
-                }
-            }
-
-            void DirectTeleport()
-            {
-                // Teleport
-                UpdateGismosInfo(_pos);
-                TeleportImpl(_pos);
-                return;
-            }
-
-            void Nofity()
-            {
-                // Notify Timeline
-                MoveInfo moveInfo = new MoveInfo(this, position, _pos);
-
-                if (reactiveInstance != null)
-                {
-                    // Transfer Command To reactive instance
-                    reactiveInstance.OnRelated(new MoveInfo[] { moveInfo });
-                }
-                else
-                {
-                    // Directly Notify Timeline
-                    OnCommand(moveInfo);
-                }
-
-            }
-        }
-
 
 
         #endregion
@@ -330,9 +257,10 @@ namespace FourFrame.TopDown{
         /// If this player has related with another instance, then all the 
         /// Command will be sent to this instance to deal with in this func
         /// </summary>
-        protected virtual void OnRelated(BaseInfo[] _infoGroup)
+        protected virtual void OnRelated(List<BaseInfo> _infoList)
         {
-            // Implemented if any instance is related to current Instance: transfer message
+            // Implemented if any instance is related to current Instance: 
+            // transfer message
 
         }
 
@@ -444,6 +372,49 @@ namespace FourFrame.TopDown{
         {
             var worldPosition = gameObject.transform.position;
             this.position = GridMap.Instance.World2Point(worldPosition);
+        }
+
+        /// <summary>
+        /// Add _rxInstance to the end of this instance's rx chain
+        /// </summary>
+        /// <param name="rxInstance"></param>
+        protected void AddReactiveInstance(Instance rxInstance)
+        {
+            AddReactiveInstance(this, rxInstance);
+        }
+
+        /// <summary>
+        /// Add _rxInstance to the end of _target's rx chain
+        /// </summary>
+        /// <param name="_target"></param>
+        /// <param name="_rxInstance"></param>
+        protected void AddReactiveInstance(Instance _target, Instance _rxInstance)
+        {
+            var end = _target;
+            while (end.reactiveInstance != null)
+            {
+                end = end.reactiveInstance;
+                if (end == _target)
+                {
+                    Debug.LogWarning(string.Format(
+                        "Add RxInstance Failed: Reactive Circle Detected From {0}",
+                        _target.name));
+                    return;
+                }
+            }
+
+            end.reactiveInstance = _rxInstance;
+            Debug.Log(string.Format("Add {0} at end of {1}'s Rx chain",
+                _rxInstance.name,
+                _target.name));
+        }
+
+        protected void OnCommandAll(List<BaseInfo> _infoList)
+        {
+            foreach(var info in _infoList)
+            {
+                OnCommand(info);
+            }
         }
 
 

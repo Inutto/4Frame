@@ -53,7 +53,9 @@ namespace FourFrame.TopDown
 
         private Portal GetPortal(string portalType)
         {
-            // TODO
+            var portals = Instance.GetInstancesWithTag<Portal>("Portal");
+           
+            Debug.LogWarning("Timeline: Can not find active Player: No Active one");
             return null;
         }
 
@@ -64,7 +66,7 @@ namespace FourFrame.TopDown
 
         public void CreateTimeline()
         {
-
+            Debug.Log("Test Here");
         }
 
         public void Play()
