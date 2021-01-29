@@ -116,7 +116,7 @@ namespace FourFrame.TopDown
             tickInfoDic[tick] = new TickInfo();
         }
 
-        private void RecordBaseInfo(BaseInfo _info)
+        private void Record(BaseInfo _info)
         {
             var currentTickInfo = tickInfoDic[currentTick];
             currentTickInfo.Add(_info);
@@ -192,7 +192,7 @@ namespace FourFrame.TopDown
                 portal.name
                 ));
 
-            RecordBaseInfo(_info);
+            Record(_info);
 
             if (canCreateTimeline)
             {
@@ -224,7 +224,7 @@ namespace FourFrame.TopDown
                     info.end.ToString()
                     ));
 
-            RecordBaseInfo(_info);
+            Record(_info);
         }
 
         private void PlayerMoveHandler(BaseInfo _info)
@@ -240,7 +240,7 @@ namespace FourFrame.TopDown
                     ));
 
             // Handler: Goto Next Tick after saving
-            RecordBaseInfo(_info);
+            Record(_info);
             
         }
 
@@ -251,7 +251,7 @@ namespace FourFrame.TopDown
             InteractInfo info = _info as InteractInfo;
 
             // Much to be Implemented Here
-            RecordBaseInfo(_info);
+            Record(_info);
         }
 
 

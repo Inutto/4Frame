@@ -80,11 +80,14 @@ namespace FourFrame.TopDown
         {
 
             var oldTimeline = main;
+            currentTick = _tick;
 
             // Creation
             var newTimeline = Instantiate(oldTimeline, this.transform);
             newTimeline.tickInfoDic.Clear();
-            currentTick = _tick;
+            newTimeline.InitEmptyTickInfoDic(currentTick);
+
+           
             timelineList.Add(newTimeline);
 
             // Subscription
