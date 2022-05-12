@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
 
-public class DebugF : MonoBehaviour
+
+
+/// <summary>
+/// A Wrapper Static Class for UnityEngine.Debug
+/// </summary>
+public static class DebugF
 {
     /// <summary>
     /// Used by GetFrame -> outtrace # frame and get Reflections info. 
@@ -14,8 +19,6 @@ public class DebugF : MonoBehaviour
     private static string classNameColor = "#09F7F7";
     private static string methodNameColor = "yellow";
     private static string gameObjectNameColor = "#38F709";
-    private static string signalColor = "#FFC0CB";
-    private static string stateColor = "#FF8C00";
 
     #region BASIC
 
@@ -29,7 +32,6 @@ public class DebugF : MonoBehaviour
         string message = GenerateLogMessage(_message, _gameObject);
         Debug.Log(message);
     }
-
 
     /// <summary>
     /// Quick Generate Empty Message For FLAGCHECK
@@ -55,99 +57,42 @@ public class DebugF : MonoBehaviour
 
     #endregion
 
-    #region STATE CHANGE
-
-
-    public static void Log(string before, string after, GameObject _gameObject = null)
-    {
-        string message = GenerateStateChangeMessage(before, after, _gameObject);
-        Debug.Log(message);
-    }
-
-
-
-
-    #endregion
-
-
     private static string GenerateLogMessage(object _message, GameObject _gameObject = null)
     {
-        string message = "Default Message";
         if (_gameObject == null)
         {
-            message = string.Format("{0} -> {1}",
-                GenerateBaseMethodFullInfo(),
+            return string.Format("{0} -> {1}",
+                GetMethodBaseInfo(),
                 _message.ToString());
         }
 
         else
         {
-            message = string.Format("{0} -> {1}: {2}",
-                GenerateBaseMethodFullInfo(),
-                GenerateGameObjectInfo(_gameObject),
+            return string.Format("{0} -> {1}: {2}",
+                GetMethodBaseInfo(),
+                GetGameObjectInfo(_gameObject),
                 _message.ToString());
         }
-
-        return message;
     }
 
-
-    private static string GenerateStateChangeMessage(string _before, string _after, GameObject _gameObject = null)
-    {
-        string stateChangeText = GetColoredString("STATE CHANGE", signalColor);
-        string before = GetColoredString(_before, stateColor);
-        string after = GetColoredString(_after, stateColor);
-
-        string message = "";
-
-        if (_gameObject == null)
-        {
-            message = string.Format("{0} -> {1}: {2} -> {3}",
-                GenerateBaseMethodFullInfo(),
-                stateChangeText,
-                before,
-                after);
-        }
-
-        else
-        {
-            message = string.Format("{0} -> {1}: {2}: {3} -> {4}",
-                GenerateBaseMethodFullInfo(),
-                stateChangeText,
-                GenerateGameObjectInfo(_gameObject),
-                before,
-                after);
-        }
-
-
-        return message;
-    }
-
-    private static string GenerateBaseMethodFullInfo()
+    private static string GetMethodBaseInfo()
     {
         System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace(true);
         MethodBase methodBase = stackTrace.GetFrame(stackTraceNum).GetMethod();
 
         string methodName = methodBase.Name;
         string className = methodBase.DeclaringType.Name;
+        
+        return string.Format("[{0}].{1}",
+            className.ToRichTextColor(classNameColor).ToRichTextBold(),
+            methodName.ToRichTextColor(methodNameColor).ToRichTextItalic());
 
-        return string.Format("[<b><color={0}>{1}</color></b>].<i><color={2}>{3}</color></i>",
-            classNameColor, className,
-            methodNameColor, methodName);
     }
 
-    private static string GenerateGameObjectInfo(GameObject _gameObject)
+    private static string GetGameObjectInfo(GameObject _gameObject)
     {
-        return string.Format("[<color={0}>{1}</color>]",
-            gameObjectNameColor, _gameObject.name);
+        return _gameObject.name.ToRichTextColor(gameObjectNameColor);        
     }
 
 
-    private static string GetColoredString(string _message, string _color)
-    {
-        string message = string.Format("<color={0}>{1}</color>",
-            _color,
-            _message);
-        return message;
-    }
 }

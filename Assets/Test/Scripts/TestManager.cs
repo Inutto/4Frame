@@ -7,6 +7,7 @@ public class TestManager : MonoSingleton<TestManager>
     // Start is called before the first frame update
     void Start()
     {
+        DebugF.Log("Test Message", gameObject);
         
     }
 

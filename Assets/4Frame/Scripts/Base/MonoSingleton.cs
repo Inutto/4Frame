@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+/// <summary>
+/// Let your singleton class inherit this class as a componnet. e.g., public class GameManager : MonoSingleton<GameManager>
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
 
@@ -27,7 +33,7 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             if (_Instance != this as T)
             {
-                DebugF.LogWarning(" Multiple instance detected when trying to create singleton behavior at ", this.gameObject);
+                DebugF.LogWarning("Multiple singleton component detected on this GameObject; The older one will be deactivated automatically", this.gameObject);
                 _Instance.enabled = false;
             }
         }
